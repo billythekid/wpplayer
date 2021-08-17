@@ -1,0 +1,60 @@
+---3.0.6(beta)----------------------------------------------------------------------------------
+1. fixed bug with play to MSN in playlist not being synchronised with main player.
+2. fixed SLOTS bug where slots showed after unsetting all channels thru "Status Window" option.
+
+---3.0.5----------------------------------------------------------------------------------
+1. changed text of the "about" dialog.
+2. changed text in updater in regards to newer version being installed than published.
+3. fixed "/did invalid command" on others ctcp sound if player is not open.
+4. added version information in ctcp status reply
+5. fixed edit box in onAirNow setup dialog not handling long paths
+
+---3.0.4----------------------------------------------------------------------------------
+1. fixed bug in updater where it always showed a blank dialog window even if on most current version.
+
+---3.0.3----------------------------------------------------------------------------------
+1. fixed bug where wma files could only play in random (and not by clicking play)
+2. added memory of previous state for 'Use OnAirNow Plugin' menu item
+3. added memory of previous state for 'Show in MSN Messenger' menu item
+4. replaced all instances of "$mircdir" to "$nofile($mircexe)" for mIRC 6.3 (for vista 
+	compatibility $mircdir returns the mirc installation/settings folder which 
+	changed in mIRC 6.3 to %appdata%) This change will not affect older mIRCs.
+5. added horizontal scrollbars to the list boxes when data exceeds box width.
+6. changed zipping of list to happen minimized, this makes it faster and non-intrusive.
+7. removed installer executable.
+8. wpplayer.zip is now automatically created from my own machine when invoked for 
+	increased security.
+9. updated 7zip as it wasn't the standalone (7za.exe in original download) version.
+10. updated WP MP3 Player UPDATER to include list box with current updates. Also changed to 
+	updates file on the server.
+
+
+---3.0.2----------------------------------------------------------------------------------
+1. fixed hotlink bug where hotlinking was disabling right-clicks in channel/status.
+2. fixed hotlink bug in channel, was trying to grab song with some play message.
+3. added OnAirNow wordpress plugin (track now playing information in a wordpress blog)
+
+---3.0.1----------------------------------------------------------------------------------
+1. fixed bug where listmaker wasn't removing old .txt list if it was also zipped.
+2. added "WP MP3 Playlist" dialog.
+3. fixed toolbar bug on load (duplicated on start).
+4. fixed toolbar bug on unload.
+5. fixed unload bug where wphidespam.mrc remained loaded after unloading wpplayer.txt
+6. added CTCP's ON/OFF to status reply.
+7. fixed "spaces in the file path" bug on load for play message files.
+8. fixed "spaces in the file path" bug on creation of wphidespam file.
+9. added new setup.exe file to ease loading
+
+---3.0.0----------------------------------------------------------------------------------
+1. added .zip compression to listmaker using 7-zip program(7z.exe)
+2. added .zip extraction to list grabber using 7-zip program.
+3. fixed bug with double line remover in the list grabber.
+4. fixed bug with auto-updater(related to new billy.the-kid.org server)
+
+wpupdates --- 2.76 --- 2.77 --------------------------------------------------------------
+
+1. changed %wp.messtype to show SOUND if wavs are selected/played.
+2. added play waves from channel option in WAV tab 
+------------------------------------------------------------------------------------------
+------------------------------------------------------------------------------------------
+------------------------------------------------------------------------------------------

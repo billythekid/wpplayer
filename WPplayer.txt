@@ -1,0 +1,2630 @@
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;  If this doesnt work on your machine, or
+;;;;;;;;;;   Script by billythekid   ;;;;;;;;;;  you have any questions, please don't
+;;;;;;;;;; Find me in #IRCWavPlayers ;;;;;;;;;;  hesitate to get in touch.
+;;;;;;;;;;        On PhaZeNet        ;;;;;;;;;;  memo billythekid in PhaZeNet or email
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;  btk@the-kid.org
+
+alias wp.ver {
+  return 3.0.6(beta)
+}
+
+dialog -l wpmain {
+  title WP MP3 Player v $+ $wp.ver
+  size -1 -1 299 150
+  option dbu notheme
+  icon $scriptdirwpicon.ico, 0
+  button "PLAY", 2, 248 125 47 11, default
+  button "STOP", 4, 248 137 40 11
+  button "Refresh", 5, 3 139 30 8
+  tab "MP3", 8, 3 1 242 136
+  list 1, 7 17 235 117, tab 8 sort size hsbar
+  scroll "mp3position", 66, 35 139 211 8, tab 8 range 0 100 horizontal
+  tab "WAV", 9
+  list 10, 7 17 235 117, tab 9 sort size hsbar
+  check "Play channel wavs played by others if file exists in list above.", 71, 40 138 205 10, tab 9
+  tab "WMA", 48
+  list 49, 7 17 235 117, tab 48 sort size hsbar
+  tab "ZIP", 12
+  list 47, 7 17 235 117, tab 12 sort size hsbar
+  tab "Channel", 3
+  list 7, 7 17 235 106, tab 3 sort size extsel hsbar
+  button "Remove", 21, 70 125 60 10, tab 3
+  button "Clear All", 22, 217 125 26 10, tab 3
+  button "Grab", 23, 7 125 60 10, tab 3
+  tab "List Maker", 39
+  button "Make List", 40, 6 115 150 20, tab 39
+  check "Folder Names", 41, 51 22 64 8, tab 39
+  check "Attach Message:", 44, 51 46 58 9, tab 39
+  edit "", 45, 7 58 235 55, tab 39 multi return autovs vsbar
+  check "MP3 Files", 42, 10 22 35 8, tab 39
+  check "WAV Files", 43, 10 30 35 8, tab 39
+  check "ZIP Files", 51, 10 38 35 8, tab 39
+  button "Advertise List", 20, 157 115 86 20, tab 39
+  check "File Sizes", 26, 51 30 53 8, tab 39
+  check "Bitrate/Rate/Mode(Very Slow)", 27, 51 38 85 8, tab 39
+  box "Include", 28, 7 15 135 42, tab 39
+  edit %wp.listnick, 34, 171 29 56 10, tab 39
+  text "List Nick", 36, 145 29 25 8, tab 39
+  check "WMA Files", 62, 10 46 35 8, tab 39
+  check "compress list for quicker sending?", 72, 145 45 95 10, tab 39
+  tab "Search", 46
+  list 15, 7 40 235 94, tab 46 sort size hsbar
+  button "Search", 14, 8 29 115 10, tab 46
+  edit "", 13, 7 17 235 10, tab 46
+  button "Perform @find", 67, 126 29 115 10, tab 46
+  tab "List Grabber", 54
+  box "Current List Being Grabbed", 55, 8 19 232 20, tab 54
+  text %wp.grablist, 56, 10 27 130 8, tab 54
+  button "SelectList", 57, 145 25 30 10, tab 54
+  list 58, 8 42 233 74, tab 54 size extsel hsbar
+  button "Remove Line", 59, 9 119 61 15, tab 54
+  button "Stop", 60, 190 119 26 15, tab 54
+  text %wp.grabchan, 63, 75 124 84 8, tab 54
+  button "Change", 64, 161 122 25 10, tab 54
+  button "Resume", 61, 217 119 26 15, tab 54
+  box "Channel", 32, 72 116 117 19, tab 54
+  button "Check list for doubles", 69, 180 25 55 10, tab 54
+  check "Play Messages", 16, 250 50 46 10
+  check "Handle Sends", 17, 250 17 44 8
+  check "Handle @find", 18, 250 2 44 8
+  check "Silent Play", 35, 252 88 41 10
+  link "WP", 50, 290 140 8 8
+  check "Random", 6, 252 99 41 10
+  check "Repeat", 11, 252 110 41 10
+  edit %wp.slots, 52, 275 25 20 10
+  text "Max Slots", 53, 250 25 25 10
+  button "Change File", 65, 254 60 35 10
+  button "Use Blank", 25, 254 70 35 10
+  box "", 29, 248 46 49 38
+  box "", 30, 248 84 49 38
+  box "", 31, 248 12 49 34
+  check "Send SLOTS", 33, 250 35 44 10
+  menu "Settings", 37
+  item "Folder Settings", 38, 37
+  item "Set On Top", 19, 37
+  item "Hide Spam", 68, 37
+  item "Show in MSN Messenger", 70, 37
+  item "Use OnAirNow Plugin", 73, 37
+  item "Stealth", 24, 37
+  item "About", 101, 37
+}
+
+dialog -l wpabout {
+  title "About The Author"
+  size -1 -1 326 123
+  option pixels notheme
+  icon 1, 215 10 100 100, $scriptdirBILLYsmall.jpg, 0, noborder
+  link "My Weblog", 2, 45 100 60 16
+  link "My Scripts", 3, 120 100 60 16
+  text "I can be found in the PhaZeNet IRC network in #IRCWavPlayers or in #billythekids-hideout. Feel free to /msg me for a chat. For more info about me and what I am doing at the moment, click one of the links below.", 4, 5 5 205 90
+}
+alias -l wpabout {
+  if $exists($scriptdirBILLYsmall.jpg) {
+    dialog -md wpabout wpabout
+  }
+  else run http://the-kid.org/about.html
+} 
+on 1:dialog:wpabout:sclick:*:{
+  if $did == 2 run http://blog.the-kid.org
+  elseif $did == 3 run http://billy.the-kid.org
+}
+dialog -l wpupdate {
+  title "WP MP3 Player UPDATER"
+  size -1 -1 299 150
+  option dbu notheme
+  text %wp.updatetext, 1, 5 1 290 15
+  button "UPDATE NOW (Recommended)", 2, 5 115 240 30, ok
+  button "NO THANKS", 3, 250 115 45 30, cancel
+  list 5, 10 30 280 75, size hsbar
+  box "Updates", 6, 5 20 290 90
+  menu "", 4
+}
+alias msnsong {
+  var %wp.dll $+($scriptdir,MsnSong.dll)
+  .comreg %wp.dll
+  .comopen msn Msn.Write
+  if ($comerr) {
+    ;register the DLL
+    comreg %wp.dll
+    ;try to open it again
+    comopen msn Msn.Write
+    ; still failed, halt the script
+    if ($comerr) halt
+  }
+  var %i $com(msn,WriteToMsn,1,bstr,$1-,bstr,$null,bstr,$null)
+  .comreg -u %wp.dll
+  .comclose msn
+}
+on 1:dialog:wpupdate:init:0:{
+  var %i 1
+  :damn
+  if $($+(%,wp.ud,%i),2) {
+    did -a wpupdate 5 $v1
+    inc %i
+    goto damn
+  }
+  did -z wpupdate 5
+  unset %wp.ud*
+  unset %wp.updatetext
+  unset %wp.pfound
+}
+on 1:dialog:wpupdate:sclick:*:{
+  if $did == 2 { run http://billy.the-kid.org/scripts/wpplayer.zip }
+  elseif $did == 3 { dialog -ve wpmain }
+}
+
+alias -l wp.checkversion {
+  .unset %wp.pfound 
+  .set %wp.versionchecked $true
+  sockopen wpp billy.the-kid.org 80 
+}
+on *:sockopen:wpp:{ 
+  if ($sockerr > 0) return
+  sockwrite -n $sockname GET /scripts/wpplayerversion.html HTTP/1.1
+  sockwrite -n $sockname Host: billy.the-kid.org $+ $crlf $+ $crlf 
+}
+on 1:sockread:wpp:{
+  if ($sockerr > 0) return
+  :nextread
+  sockread -f %wp.data
+  if ($sockbr == 0) return
+  if (%wp.data == $null) %wp.data = -
+  if %wp.pfound { 
+    set %wp.latestversion $gettok(%wp.data,2,32)
+    if ( $wp.ver < %wp.latestversion ) {
+      set %wp.updatetext $($gettok(%wp.data,3,62) , 2 )
+      var %u 0
+      goto updates
+    }
+    elseif $wp.ver > %wp.latestversion {
+      set %wp.updatetext You currently have WP MP3 Player v $+ $wp.ver installed $+ $chr(44) the latest legitimate version is actually v $+ %wp.latestversion $crlf $+ There may be some error... Would you like to get %wp.latestversion now?
+    }
+    elseif $wp.ver = %wp.latestversion {
+      goto nothing
+    }
+    goto versionfound
+  }
+  if (*WPPlayer*Current*Version* iswm %wp.data ) { set %wp.pfound $true } 
+  goto nextread
+  :updates
+  sockread -f %wp.data
+  if ($sockbr == 0) goto versionfound
+  if (%wp.data == $null) %wp.data = -
+  else {
+    inc %u
+    set %wp.ud $+ %u %wp.data
+    goto updates
+  }
+  :versionfound
+  dialog -md wpupdate wpupdate
+  :nothing    
+  sockclose wpp
+  unset %wp.data
+  return
+}
+
+dialog -l wpfolderset {
+  title "Scanning"
+  size -1 -1 284 185
+  option dbu
+  list 1, 2 13 280 157, sort size extsel hsbar
+  button "Select Folders", 2, 2 172 279 12, default
+  text "Hold Ctrl and click on available folders that you want to play from.", 3, 2 2 281 9, center
+}
+
+dialog -l wpwarn {
+  title "WP MP3 Player Stealth Information"
+  size -1 -1 183 52
+  option dbu
+  check "Don't show this warning again.", 1, 30 37 85 10
+  text "**NOTE** NOT all players are compatible with stealth searching/grabbing. If a song does not send you may need to turn off stealth. ", 2, 30 8 146 25
+  button "OK", 3, 139 36 37 12, default
+  icon 4, 6 6 15 15
+}
+
+menu channel,status {
+  WP MP3 Player
+  .$submenu($wpmenus($1))
+}
+alias -l wpmenus {
+  if $dialog(wpmain) && ( $window($active).cid == %wp.cid ) {
+    if ($1 == begin) return -
+    if ($1 == 1) return Play to $active ONLY:wp.openplayer $cid
+    if ($1 == 2) return $iif(!$istok(%wp.chan,$active,230),$style(2)) Stop playing to $active : wp.delchan 
+    if ($1 == 3) return Play to ALL current $network channels:wp.addallchans
+    if ($1 == 4) return Stop playing to ALL selected channels:wp.delallchans
+    if ($1 == 5) return $iif($istok(%wp.chan,$active,230),$style(2)) Add $active as channel:wp.addchan
+    if ($1 == end) return -
+  }
+  elseif !$dialog(wpmain) {
+    if ($1 == begin) return -
+    if ($1 == 1) return $iif($dialog(wpmain),$style(3)) Open WP MP3 Player:wp.openplayer $cid
+    if ($1 == 2) return $iif($dialog(wpmain),$style(2)) Unload WP MP3 Player:wp.unload
+    if ($1 == end) return -
+  }
+  elseif ( $window($active).cid != %wp.cid ) {
+    if ($1 == begin) return -
+    if ($1 == 1) return WP MP3 Player active in $scid(%wp.cid).network : wpmenus
+    if ($1 == 2) return Click here to change to $network :wp.openplayer $cid
+    if ($1 == end) return -
+  }
+}
+menu @wpmenu {
+  .$submenu($wptoolbarmenus($1))
+}
+alias -l wptoolbarmenus {
+  if $1 == begin return -
+  if $1 == 1 return $iif($toolbar(wp).width == 16,use large icon:wp.largeicon,use small icon:wp.smallicon)
+  if ($1 == end) return -
+}
+alias -l wp.unload {
+  if $?!="Delete all WP Player settings?" {
+    unset %wp.*
+    .timer 1 16 echo -a 14,15This is the ghost of WP Player, I miss you already!
+    unload -rs $qt( $script(wphidespam.mrc) )
+    unload -rs $qt( $script )
+  }
+  else {
+    .timer 1 16 echo -a 14,15This is the ghost of WP Player, I miss you already!
+    unload -rs $qt( $script(wphidespam.mrc) )
+    unload -rs $qt( $script )
+  }
+}
+
+alias -l wp.addallchans {
+  var %i = 0
+  while %i < $chan(0) {
+    inc %i
+    set %wp.chan $addtok(%wp.chan,$chan(%i),230)
+  }
+  set %wp.chantotal $numtok(%wp.chan,230)
+  dialog -ve wpmain
+  did -v wpmain 16,17,18,25,33,35,52,53,65
+}
+alias -l wp.delallchans {
+  set %wp.chan Status Window
+  did -hu wpmain 16,17,18,25,33,35,52,53,65
+  set %wp.chantotal $numtok(%wp.chan,230)
+  .timerwpslotshow off
+  wpopen
+}
+alias -l wp.addchan {
+  set %wp.chan $addtok(%wp.chan,$active,230)
+  set %wp.chantotal $numtok(%wp.chan,230)
+  dialog -ve wpmain
+  did -v wpmain 16,17,18,25,33,35,52,53,65
+}
+on 1:UNLOAD:{
+  toolbar -d wpsep1
+  toolbar -d wpsep2
+  toolbar -d wp
+}
+
+on *:start:{
+  if $version > 6.19 {
+    wpstartup
+  }
+}
+alias -l wpstartup {
+  toolbar -as wpsep1
+  toolbar -az3 wp "Open WP MP3 Player" $qt($scriptdirwpicons.bmp) 0 34 16 16 "/wp.startopen" @wpmenu
+  if %wp.toolicon == large {
+    wp.largeicon
+  }
+  else wp.smallicon
+  toolbar -as wpsep2
+}
+
+alias -l wp.largeicon {
+  toolbar -p wp $qt($scriptdirwpicons.bmp) 0 0 32 32 
+  set %wp.toolicon large
+}
+alias -l wp.smallicon {
+  toolbar -p wp $qt($scriptdirwpicons.bmp) 0 34 16 16
+  set %wp.toolicon small
+}
+
+alias -l wp.startopen {
+  wp.openplayer $activecid
+}
+on *:PART:#:{
+  if $nick == $me {
+    if $findtok(%wp.chan,$chan,1,230) {
+      set %wp.chan $remtok(%wp.chan,$chan,1,230)
+      set %wp.chantotal $numtok(%wp.chan,230)
+    }
+    else halt
+  }
+}
+on *:kick:#:{
+  if $knick == $me {
+    if $findtok(%wp.chan,$chan,1,230) {
+      set %wp.chan $remtok(%wp.chan,$chan,1,230)
+      set %wp.chantotal $numtok(%wp.chan,230)
+    }
+    else halt
+  }
+}
+alias -l wp.delchan {
+  set %wp.chan $remtok(%wp.chan,$active,1,230)
+  set %wp.chantotal $numtok(%wp.chan,230)
+}
+on 1:close:*:{
+  if ( $activecid == %wp.cid ) && ( $target isin status window ) && ( $dialog(wpmain) ) && ( $appactive ) {
+    set %wp.cid $scon(1)
+    var %i $input(The active connection for WP Player just closed $crlf WP Player has reset to the $scid(%wp.cid).network network.,ok5i,WP Player)
+    wp.openplayer %wp.cid
+  }
+}
+alias -l wp.openplayer {
+  if !%wp.versionchecked { wp.checkversion }
+  unset %wp.chan*
+  set %wp.chan $active 
+  set %wp.chantotal $numtok(%wp.chan,230)
+  wpopen
+  set %wp.cid $1
+  set %wp.tab 1
+  if ( %wp.chan == Status Window ) {
+    did -hu wpmain 16,17,18,25,33,35,52,53,65
+  }
+  else did -v wpmain 16,17,18,25,33,35,52,53,65
+}
+
+on 1:dialog:wpmain:close:0: {
+  .disable #wpsends #wpfinds #wprandom #wprepeat #wpstealth
+  .timerwplayer off
+  .timerwpslotshow off
+  .timerwp-player off
+  unset %wp.chan* %wp.versionchecked
+}
+on *:getfail:*.mp3,*.wav,*.zip,*.wma:{
+  if $dialog(wpmain) {
+    if $nopath( $filename ) isin $did(wpmain,58,1) || $nopath( $filename ) isin $replace( $did(wpmain,58,1) , $chr(32) , $chr(95) ) {
+      wpgrab
+    }
+  }
+}
+on *:FILERCVD:*.mp3:{
+  if $dialog(wpmain) {
+    var %i 0
+    while %i < %wp.mp3dirtotal {
+      inc %i
+      if $nofile($filename) == $eval(% $+ wp.mp3dir $+ %i , 3 ) { 
+        did -a wpmain 1 $nopath($filename) 
+      }
+    }
+    if $nopath( $filename ) isin $did(wpmain,58,1) || $nopath( $filename ) isin $replace( $did(wpmain,58,1) , $chr(32) , $chr(95) ) {
+      set %wp.grabfile $did(wpmain,58,1).text
+      set %wp.delnum $read( %wp.grablist , w , * $+ %wp.grabfile $+ * )
+      write -dl $+ $readn %wp.grablist 
+      did -d wpmain 58 1
+      wpgrab
+    }
+  }
+}
+on *:FILERCVD:*.wav:{
+  if $dialog(wpmain) {
+    var %i 0
+    while %i < %wp.wavdirtotal {
+      inc %i
+      if $nofile($filename) == $eval(% $+ wp.wavdir $+ %i , 3 ) { 
+        did -a wpmain 10 $nopath($filename) 
+      }
+    }
+    if $nopath( $filename ) isin $did(wpmain,58,1) || $nopath( $filename ) isin $replace( $did(wpmain,58,1) , $chr(32) , $chr(95) ) {
+      set %wp.grabfile $did(wpmain,58,1).text
+      set %wp.delnum $read( %wp.grablist , w , * $+ %wp.grabfile $+ * )
+      write -dl $+ $readn %wp.grablist 
+      did -d wpmain 58 1
+      wpgrab
+    }
+  }
+}
+on *:FILERCVD:*.zip:{
+  if $dialog(wpmain) {
+    var %i 0
+    while %i < %wp.zipdirtotal {
+      inc %i
+      if $nofile($filename) == $eval(% $+ wp.zipdir $+ %i , 3 ) { 
+        did -a wpmain 47 $nopath($filename) 
+      }
+    }
+    if $nopath( $filename ) isin $did(wpmain,58,1) || $nopath( $filename ) isin $replace( $did(wpmain,58,1) , $chr(32) , $chr(95) ) {
+      set %wp.grabfile $did(wpmain,58,1).text
+      set %wp.delnum $read( %wp.grablist , w , * $+ %wp.grabfile $+ * )
+      write -dl $+ $readn %wp.grablist 
+      did -d wpmain 58 1
+      wpgrab
+    }
+  }
+}
+on *:FILERCVD:*.wma:{
+  if $dialog(wpmain) {
+    var %i 0
+    while %i < %wp.wmadirtotal {
+      inc %i
+      if $nofile($filename) == $eval(% $+ wp.wmadir $+ %i , 3 ) { 
+        did -a wpmain 49 $nopath($filename) 
+      }
+    }
+    if $nopath( $filename ) isin $did(wpmain,58,1) || $nopath( $filename ) isin $replace( $did(wpmain,58,1) , $chr(32) , $chr(95) ) {
+      set %wp.grabfile $did(wpmain,58,1).text
+      set %wp.delnum $read( %wp.grablist , w , * $+ %wp.grabfile $+ * )
+      write -dl $+ $readn %wp.grablist 
+      did -d wpmain 58 1
+      wpgrab
+    }
+  }
+}
+on *:load:{
+  set %wp.disclaimer1 Music list for pre-approval only. Please delete any tracks from your Hard Drive after 24 hours.
+  set %wp.disctot 1
+  set %wp.slots 10
+  write $qt($scriptdirwpplaymessages.txt) The time here is now $ $+ time(h:nn TT)
+  write $qt($scriptdirwpplaymessages.txt) $ $+ me waves hello to everyone
+  write $qt($scriptdirwpplaymessages.txt) Can you feel it?
+  write $qt($scriptdirwpplaymessages.txt) I Can't Stop Dancing!
+  write $qt($scriptdirwpplaymessages.txt) $ $+ me does it with tunes.
+  write $qt($scriptdirwpplaymessages.txt) $ $+ me loves to play hard!
+  write $qt($scriptdirwpplaymessages.txt) 4,1¸7.8­9·3~10^2¯12^11~6·13­5.4¸
+  write $qt($scriptdirwpplaymessages.txt) This one is fantAAAAstic!
+  write $qt($scriptdirwpplaymessages.txt) This thingy ROCKS!
+  write $qt($scriptdirwpplaymessages.txt) $ $+ server must love me ;)
+  write $qt($scriptdirwpplaymessages.txt) Can it really be $ $+ time(h:nn TT) already?
+  set %wp.messfile $qt($scriptdirwpNOplaymessage.txt)
+  set %wp.listnick $me
+  write $qt($scriptdirwpNOplaymessage.txt)
+  write -c $qt($scriptdirwphidespam.mrc) alias wphidespam $chr(123))
+  write $qt($scriptdirwphidespam.mrc) if !$ $+ did(wpmain,68).state $chr(123)
+  write $qt($scriptdirwphidespam.mrc) did -c wpmain 68
+  write $qt($scriptdirwphidespam.mrc) .enable #wphidespam
+  write $qt($scriptdirwphidespam.mrc) $chr(125)
+  write $qt($scriptdirwphidespam.mrc) else $chr(123)
+  write $qt($scriptdirwphidespam.mrc) did -u wpmain 68
+  write $qt($scriptdirwphidespam.mrc) .disable #wphidespam
+  write $qt($scriptdirwphidespam.mrc) $chr(125)
+  write $qt($scriptdirwphidespam.mrc) $chr(125)
+  write $qt($scriptdirwphidespam.mrc)
+  write $qt($scriptdirwphidespam.mrc) #wphidespam on
+  write $qt($scriptdirwphidespam.mrc)
+  write $qt($scriptdirwphidespam.mrc) on ^*:text:*:#: $chr(123)
+  write $qt($scriptdirwphidespam.mrc) if $ $+ dialog(wpmain) $chr(123)
+  write $qt($scriptdirwphidespam.mrc) if $ $+ did(wpmain,68).state $chr(123)
+  write $qt($scriptdirwphidespam.mrc) if ( ! $ $+ + $ $+ nick isin $ $+ 1- ) $chr(123) 
+  write $qt($scriptdirwphidespam.mrc) haltdef 
+  write $qt($scriptdirwphidespam.mrc) halt 
+  write $qt($scriptdirwphidespam.mrc) $chr(125)
+  write $qt($scriptdirwphidespam.mrc) if ( @ $ $+ + $ $+ nick isin $ $+ 1- ) $chr(123) 
+  write $qt($scriptdirwphidespam.mrc) haltdef 
+  write $qt($scriptdirwphidespam.mrc) halt 
+  write $qt($scriptdirwphidespam.mrc) $chr(125)
+  write $qt($scriptdirwphidespam.mrc) $chr(125)
+  write $qt($scriptdirwphidespam.mrc) $chr(125)
+  write $qt($scriptdirwphidespam.mrc) $chr(125)
+  write $qt($scriptdirwphidespam.mrc) 
+  write $qt($scriptdirwphidespam.mrc) #wphidespam end
+  .load -rs $qt($scriptdirwphidespam.mrc))
+  echo -a 0,15[1private14] WP MP3 Player loaded successfully
+  echo -a 0,15[1private14] Play messages from %wp.messfile
+  echo -a 0,15[1private14] Right click in a window to begin
+  if $lock(decode) { 
+    echo -a 0,15[1private14] 4Your decode ability is currently locked, decode needs to be unlocked for some parts of WP Player to work.
+    echo -a 0,15[1private14] 4Please see the help file for details on how to unlock this. The help file is
+    echo -a 0,15[1private14] 4also available at15 http://billy.the-kid.org/scripts/wphelp/_1uh0ui4m1.htm#StealthSettings
+  }
+  if $isfile($qt($findfile($nofile($mircexe),WP MP3 Player Setup.exe,1))) { .timer 1 5 .remove $qt($findfile($nofile($mircexe),WP MP3 Player Setup.exe,1)) }
+  if $isfile($qt($findfile($nofile($mircexe),WPPlayer.zip,1))) { .remove $qt($findfile($nofile($mircexe),WPPlayer.zip,1)) }
+}
+alias -l wp-player {
+  set %wp.pos $int( $calc( ( $insong.pos / $insong.length ) * 100 ))
+  did -c wpmain 66 %wp.pos
+}
+alias -l wpopen {
+  if !$dialog(wpmain) { dialog -mdv wpmain wpmain }
+  else dialog -v wpmain
+}
+
+alias -l wp.refresh {
+  did -r wpmain 1,10,47,49
+  var %num 0
+  while %num < %wp.mp3dirtotal {
+    inc %num
+    set %wp1 $findfile($eval(% $+ wp.mp3dir $+ %num,4),*.mp3,0,0,did -a wpmain 1 $nopath($1-) )
+  }
+  var %num 0
+  while %num < %wp.wavdirtotal {
+    inc %num
+    set %wp1 $findfile($eval(% $+ wp.wavdir $+ %num,4),*.wav,0,0,did -a wpmain 10 $nopath($1-) ) 
+  }
+  var %num 0
+  while %num < %wp.zipdirtotal {
+    inc %num
+    set %wp1 $findfile($eval(% $+ wp.zipdir $+ %num,4),*.zip,0,0,did -a wpmain 47 $nopath($1-) )
+  }
+  var %num 0
+  while %num < %wp.wmadirtotal {
+    inc %num
+    set %wp1 $findfile($eval(% $+ wp.wmadir $+ %num,4),*.wma,0,0,did -a wpmain 49 $nopath($1-) )
+  }
+  unset %wp1
+  if $insong {
+    if $didwm(wpmain , %wp.tab , $wpremchar($nopath($insong.fname) ) ) {
+      did -c wpmain %wp.tab $v1
+    }
+  }
+  did -z wpmain 1,10,47,49
+}
+
+on 1:dialog:wpwarn:sclick:3:{
+  if $did(1).state == 1 { 
+    set %wp.hidewarn $true
+  }
+  else set %wp.hidewarn $false
+  dialog -x wpwarn
+  wpstealth2
+}
+on 1:dialog:wpwarn:close:*:{
+  if $did(1).state == 1 { 
+    set %wp.hidewarn $true
+  }
+  else set %wp.hidewarn $false
+  wpstealth2
+}
+alias -l wpstealth {
+  if $did(wpmain,24).state == 0 {
+    if %wp.hidewarn != $true { 
+      var %i $dialog(wpwarn,wpwarn,-4)
+    }
+    else wpstealth2
+  }
+  else {
+    did -u wpmain 24
+    .disable #wpstealth
+  }
+}
+alias -l wpstealth2 {
+  did -c wpmain 24
+  .enable #wpstealth
+}
+#wpstealth off
+on *:INPUT:#:{
+  if ( @find == $1 ) || ( @locator == $1 ) {
+    .ctcp # search $encode($2-)
+    echo # 0,15[1private14] Stealth searching # for $wpremchar($2-)
+    haltdef
+  }
+  if ( $right($1,-1) ison # ) && ( $left($1,1) == $chr(33) ) {
+    .ctcp $right($1,-1) get $2-
+    echo # 0,15[1private14] Stealth request for $2- Sent to $right($1,-1)
+    haltdef
+  }
+}
+#wpstealth end
+on *:INPUT:?:{
+  if ( $right($1,-1) == $active ) {
+    if ( $left($1,1) == $chr(33) ) {
+      haltdef
+      .ctcp $right($1,-1) get $2-
+      echo -a 0,15[1private14] Stealth request for $2- Sent to $right($1,-1)
+      halt
+    }
+    elseif ( $left($1,1) == $chr(64) ) {
+      haltdef
+      .ctcp $right($1,-1) list
+      echo -a 0,15[1private14] Stealth request for list Sent to $right($1,-1)
+      halt
+    }
+  }
+}
+
+on 1:dialog:wpmain:init:0: {
+  if $dialog(wplist) {
+    dialog -x wplist
+    .disable #wp.playlist
+    unset %wplist.*
+    .timerwplist off
+  }
+  did -c wpmain 68
+  wp.refresh
+  wpshowgrabs
+  var %i 0
+  while %i < %wp.disctot {
+    inc %i
+    did -i wpmain 45 %i $eval( % $+ wp.disclaimer $+ %i , 3 )
+  }
+  .timerwp-player -io 0 1 wp-player
+  if %wp.msnon { wpmsn }
+  if %wp.onair { wponairnow }
+}
+
+on 1:dialog:wpmain:menu:*:{
+  if $did == 38 { wpfolderset }
+  elseif $did == 19 { wpontop }
+  elseif $did == 24 { wpstealth }
+  elseif $did == 101 { wpabout }
+  elseif $did == 68 { wphidespam }
+  elseif $did == 70 { wpmsn }
+  elseif $did == 73 { wponairnow }
+}
+on 1:dialog:wpmain:scroll:66: {
+  wpposition
+}
+alias -l wpposition {
+  did -z wpmain 66 0 100
+  did -c wpmain 66 $did(66).sel
+  if $insong {
+    set %wp.pc $int( $calc( ( $sound($insong.fname).length / 100 ) * $did(66).sel ) )
+    splay seek %wp.pc
+  }
+}
+
+on 1:dialog:wpmain:sclick:*:{
+  if $did == 50 { run http://billy.the-kid.org/scripts/wphelp/index.htm }
+  elseif $did == 5 { wp.refresh }
+  elseif $did == 14 { wpsearch }
+  elseif $did == 67 { wpdofind }
+  elseif $did == 8 { did -t wpmain 2 | set %wp.tab 1 }
+  elseif $did == 9 { did -t wpmain 2 | set %wp.tab 10 }
+  elseif $did == 12 { did -t wpmain 2 | set %wp.tab 47 }
+  elseif $did == 48 { did -t wpmain 2 | set %wp.tab 49 }
+  elseif $did == 46 { did -t wpmain 14 | set %wp.tab 15 | did -f wpmain 13 }
+  elseif $did == 2 { .timerwplayer off | wp.playsong }
+  elseif $did == 54 { wpshowgrabs }
+  elseif $did == 4 { if $did(wpmain,70).state == 1 { msnsong - WP MP3 Player } | splay stop }
+  elseif $did == 6 { wprandsel }
+  elseif $did == 11 { wprepeat }
+  elseif $did == 35 { wpsilent }
+  elseif $did == 33 { wpslots }
+  elseif $did == 40 { wpmakelist }
+  elseif $did == 17 { wpsends }
+  elseif $did == 18 { wpfinds }
+  elseif $did == 65 { wpmessages }
+  elseif $did == 61 { set %wp.grabs on | scid %wp.cid | wpgrab }
+  elseif $did == 69 { wpremovedoublesfromgrablist }
+  elseif $did == 64 { wpgrabchan }
+  elseif $did == 57 { wpgrablist }
+  elseif $did == 59 { wplosegrab }
+  elseif $did == 60 { set %wp.grabs off }
+  elseif $did == 20 { wpadvertise }
+  elseif $did == 21 { wpremoveline }
+  elseif $did == 22 { wpclearchan }
+  elseif $did == 23 { wp.grabsong }
+  elseif $did == 25 { set %wp.messfile wpNOplaymessage.txt | write -c wpNOplaymessage.txt }
+}
+alias -l wpremovedoublesfromgrablist {
+  window -hnl @wpdouble.r 
+  window -hnl @wpdouble.s
+  if !%wp.grablist {
+    set %wp.doublerfile $$sfile($nofile($mircexe).txt,Please Select file to check for doubles)
+  }
+  else set %wp.doublerfile %wp.grablist
+  filter -fw  %wp.doublerfile @wpdouble.r *
+  set %wp.doublernum $filtered
+  var %i 0
+  while %i < $line(@wpdouble.r,0) {
+    inc %i
+    if $line(@wpdouble.r , %i ) {
+      aline -n @wpdouble.s $line(@wpdouble.r , %i )
+    }
+    else inc %i
+  }
+  filter -cwf @wpdouble.s %wp.doublerfile *
+  set %wp.doublernum2 $filtered
+  noop $input(Taken %wp.doublernum lines from %wp.doublerfile $crlf $+ After filtering there are %wp.doublernum2 lines remaining. $crlf $+ Total $calc( %wp.doublernum - %wp.doublernum2 ) doubles removed.,o,WP MP3 Player)
+  close -@wpdouble.*
+  dialog -ve wpmain
+}
+
+alias -l wpremoveline {
+  while ( $did(wpmain,7).sel )  {
+    did -d wpmain 7 $v1
+    did -z wpmain 7
+  }
+}
+alias -l wpclearchan {
+  did -r wpmain 7 
+  did -z wpmain 7
+
+}
+alias -l wpadvertise {
+  scid %wp.cid
+  if %wp.list {
+    unset %wp.listthings
+    if %wp.listmp3s && %wp.totmp3 {
+      set %wp.listthings $addtok(%wp.listthings ,4 %wp.totmp3 MP3s,32)
+    }
+    if %wp.listwavs && %wp.totwav {
+      set %wp.listthings $addtok(%wp.listthings ,8 %wp.totwav WAVs,32)
+    }
+    if %wp.listwmas && %wp.totwma {
+      set %wp.listthings $addtok(%wp.listthings ,9 %wp.totwma WMAs,32)
+    }
+    if %wp.listzips && %wp.totzip {
+      set %wp.listthings $addtok(%wp.listthings ,11 %wp.totzip ZIPs,32)
+    }
+    var %i 0
+    while %i < %wp.chantotal {
+      inc %i
+      if ( $me ison $gettok(%wp.chan,%i,230) ) {
+        msg $gettok(%wp.chan,%i,230) 13,1To get my list of %wp.listthings type0 @ $+ $me 13in channel. Last updated7 %wp.musiclistmakerdate     
+      }
+    }
+  }
+  else echo -a 0,15[1private14] You have not made a list yet!  
+}
+
+on *:dialog:wpmain:edit:13:{
+  did -t wpmain 14 
+  set %wp.tab 15 
+}
+on *:dialog:wpmain:dclick:*:{
+  if ( $did == 7 ) { wp.grabsong }
+  elseif ( $did == 1 ) { wp.playsong }
+  elseif ( $did == 10 ) { wp.playsong }
+  elseif ( $did == 47 ) { wp.playsong }
+  elseif ( $did == 15 ) { wp.playsong }
+  elseif ( $did == 49 ) { wp.playsong }
+}
+alias -l wpgrab {
+  wpshowgrabs
+  :wpgrab
+  if !%wp.grabchan { 
+    set %wp.warn $input( No Channel Selected , owd , Channel Error ) 
+    unset %wp.warn 
+    dialog -v wpmain
+    halt
+  }
+  if !%wp.grablist {
+    set %wp.warn $input( No List Selected , owd , List Error ) 
+    unset %wp.warn 
+    dialog -v wpmain
+    halt
+  }
+  if $me !ison %wp.grabchan {
+    set %wp.warn $input( Please Enter %wp.grabchan To Begin, owd , Channel Error ) 
+    unset %wp.warn 
+    dialog -v wpmain
+    halt
+  }
+  if $did(wpmain,58,1) {
+    if %wp.grabs == on {
+      if $did(wpmain,24).state == 0 {
+        msg %wp.grabchan $gettok($did(wpmain,58,1),1,58)
+      }
+      else {
+        if $right($gettok($did(wpmain,58,1),1,32),-1) ison %wp.grabchan && $v1 != $me {
+          .ctcp $v1 GET $gettok($gettok($did(wpmain,58,1),2-,32),1,58)
+        }
+        else {
+          set %wp.oldnick $gettok($did(wpmain,58,1),1,32)
+          :nope
+          set %wp.newnick ! $+ $$input($v1 is not in %wp.grabchan $+ . They may have changed nick since making their list. Try another nick or cancel.,we,WP Player v $+ $wp.ver Grabber Alert)
+          if $right(%wp.newnick,-1) !ison %wp.grabchan || $v1 == $me { goto nope }
+          var %i 0
+          window -hnl @wp
+          filter -fw %wp.grablist @wp %wp.oldnick $+ $chr(32) *
+          while %i < $line(@wp,0) {
+            inc %i
+            write -s $+ %wp.oldnick %wp.grablist $replace($line(@wp,$fline( @wp , $gettok($did(wpmain,58,1),1,32) $+ *, %i )), %wp.oldnick $+ $chr(32) , %wp.newnick $+ $chr(32) ) 
+          }
+          window -c @wp
+          wpshowgrabs
+          goto wpgrab
+        }
+      }
+    }
+  }
+}
+
+
+alias -l wpontop {
+  if $did(wpmain,19).state == 0 {
+    did -c wpmain 19
+    dialog -o wpmain
+  }
+  else {
+    did -u wpmain 19
+    dialog -n wpmain
+  }
+}
+
+alias -l wpmsn {
+  if $did(wpmain,70).state == 0 {
+    did -c wpmain 70
+    set %wp.msnon $true
+  }
+  else {
+    did -u wpmain 70
+    unset %wp.msnon
+  }
+}
+
+alias -l wpgrabchan {
+  set %wp.grabchan #$$input(Please Select Channel To Grab On, ceqd, Input Channel Here with or without #)
+  did -a wpmain 63 %wp.grabchan
+  dialog -v wpmain
+}
+
+alias -l wpgrablist {
+  set %wp.grablist " $+ $$sfile($getdir,Please select the list you wish to grab from(.zip or .txt files only)) $+ "
+  did -a wpmain 56 %wp.grablist
+  if $right($nopath(%wp.grablist),4) == .zip {
+    if $isfile($+(",$left($noqt(%wp.grablist),-4),.txt,")) { .remove $+(",$left($noqt(%wp.grablist),-4),.txt,") }
+    run -n $scriptdir7z.exe e %wp.grablist -o $+ $qt($nofile(%wp.grablist))
+    set %wp.grablist2 $+(",$left($noqt(%wp.grablist),-4),.txt,")
+    set %wp.grablist %wp.grablist2
+    did -a wpmain 56 %wp.grablist
+  }
+  wpshowgrabs
+  dialog -v wpmain
+}
+
+alias -l wpshowgrabs {
+  var %i 0
+  :again
+  if $isfile(%wp.grablist) {
+    filter -foc %wp.grablist wpmain 58 !*
+    goto nomore
+  }
+  if !$filtered {
+    inc %i
+    if %i < 1000 { 
+    goto again }
+    else goto nomore
+    :nomore
+  }
+}
+
+alias -l wplosegrab {
+  set %wp.totlines $did(wpmain,58,0).sel
+  var %i 0
+  while %i < %wp.totlines {
+    inc %i
+    set %wp.grabline $did(wpmain,58,1).sel
+    set %wp.grabfile $did(wpmain,58,%wp.grabline)
+    set %wp.delnum $read( %wp.grablist , w , * $+ %wp.grabfile $+ * )
+    write -dl $+ $readn %wp.grablist 
+    did -d wpmain 58 %wp.grabline
+  }
+}
+
+ctcp *:ACCEPTED: {
+  echo -a 0,15[1private14] $nick has accepted your request for $6- and will send when ready
+  echo -a 0,15[1private14] You now have $4 files of $nick $+ 's $5 available slots.
+  haltdef
+}
+ctcp *:Status*: {
+  if ( $did(wpmain,17).state == 1 ) {
+    set %wp.serving ON
+  }
+  else set %wp.serving OFF
+  if ( $did(wpmain,18).state == 1 ) {
+    set %wp.finding ON
+  }
+  else set %wp.finding OFF
+  if ( $istok( %wp.chan , $2 , 230 ) ) {
+    set %wp.mode N - Normal
+  }
+  else set %wp.mode Not A Serving Channel
+  $iif($did(wpmain,33).state == 1, set %wp.ctcps ON,set %wp.ctcps OFF)
+  .ctcpreply $nick WP-Status 5,0<=-12 WP MP3 Player $wp.ver 5-=-4 Channel: $2 5-=-4 Server: %wp.serving 5-=-4 Mode: %wp.mode 5-=-4 CTCP's: %wp.ctcps 5-=-4 Priority: Normal 5-=-4 Search: %wp.finding 5-=-4 FileLimits: ON 5-=-4 SizeLimits: OFF 5-=-4 ListLimits: OFF 5-=-4 SpeedLimits: OFF 5-=-4 List Date: $asctime( %wp.listtime2 , yyyy-mm-dd ) 5-=-12 http://billy.the-kid.org 5-=>
+}
+#wpfinds off
+ctcp *:SEARCH: {
+  set %wp.sendnick $nick
+  set %wp.fmp3 $decode($2-)
+  wpfindit
+  haltdef
+}
+ctcp *:LIST: {
+  if ( $me = $target ) {
+    wpsendlist
+    haltdef
+  }
+}
+ctcp *:QUE: {
+  wpsendque
+  haltdef
+}
+ctcp *:remove: {
+  wp-remove
+  haltdef
+}
+alias -l wpsendlist {
+  dcc send -n $nick %wp.list
+  inc %wp.listcounter
+  .notice $nick 13,1You are the8 $ord( %wp.listcounter ) 13person to grab my list.13,13 8,8 15,1 WP MP3 Player
+}
+alias -l wpsendque {
+  .notice $nick 13,1I do not operate a que system. I currently have8 %wp.slots 13slots.8 $send(0) 13in use leaving8 $calc( %wp.slots - $send(0) ) 13available.
+  .notice $nick 13,1You are grabbing8 $send( $nick , 0 ) 13files at the moment.13,13 8,8 15,1 WP MP3 Player
+}
+alias -l wp-remove {
+  close -s $nick
+}
+on ^*:text:*@*:*:{
+  if ( @ $+ $me == $1 ) { 
+    wpsendlist
+  }
+  elseif ( @ $+ $me $+ -remove == $1 ) {
+    wp-remove
+  }
+  elseif ( @ $+ $me $+ -que == $1 ) {
+    wpsendque
+  }
+  if ( @find isin $1 ) || ( @locator isin $1 ) {
+    set %wp.sendnick $nick
+    set %wp.fmp3 $2-
+    wpfindit
+  }
+}
+alias -l wpfindit { 
+  var %num 0
+  while %num < %wp.mp3dirtotal {
+    inc %num
+    set %wpmp3 $findfile( $eval(% $+ wp.mp3dir $+ %num,3), $wpremchar(%wp.fmp3),0,0, if ( $istok(.zip .mp3 .wav .wma, $right( $1- , 4 ) , 32 ) ) write -i wpresult.txt ! $+ $me $nopath($1-) )
+    unset %wpmp3
+  }
+  var %num 0
+  while %num < %wp.wavdirtotal {
+    inc %num
+    set %wpmp3 $findfile( $eval(% $+ wp.wavdir $+ %num,3), $wpremchar(%wp.fmp3),0,0, if ( $istok(.zip .mp3 .wav .wma, $right( $1- , 4 ) , 32 ) ) write -i wpresult.txt ! $+ $me $nopath($1-) )
+    unset %wpmp3
+  }
+  var %num 0
+  while %num < %wp.zipdirtotal {
+    inc %num
+    set %wpmp3 $findfile( $eval(% $+ wp.zipdir $+ %num,3), $wpremchar(%wp.fmp3),0,0, if ( $istok(.zip .mp3 .wav .wma, $right( $1- , 4 ) , 32 ) ) write -i wpresult.txt ! $+ $me $nopath($1-) )
+    unset %wpmp3
+  }
+  var %num 0
+  while %num < %wp.wmadirtotal {
+    inc %num
+    set %wpmp3 $findfile( $eval(% $+ wp.wmadir $+ %num,3), $wpremchar(%wp.fmp3),0,0, if ( $istok(.zip .mp3 .wav .wma, $right( $1- , 4 ) , 32 ) ) write -i wpresult.txt ! $+ $me $nopath($1-) )
+    unset %wpmp3
+  }
+  set %wp.findtot $lines(wpresult.txt)
+  if %wp.findtot != 0 { 
+    .msg %wp.sendnick 13,1Total8 %wp.findtot 13matches for8 $wpremchar(%wp.fmp3) 15[WP MP3 Player]
+    if %wp.findtot <= 15 {
+      write -i wpresult.txt 13,1That's all I have for8 $wpremchar(%wp.fmp3)
+    }
+    else {
+      var %i 0
+      while %i < 10 {
+        inc %i 
+        write -i wpresult2.txt $read(wpresult.txt,%i)
+      }
+      write -c wpresult.txt
+      filter -ff wpresult2.txt wpresult.txt
+      .remove wpresult2.txt
+      .msg %wp.sendnick 13,1Showing first 10 results. 
+      write -i wpresult.txt 13,1Get my list by typing8 @ $+ $me 13in channel.
+    }
+    .play %wp.sendnick wpresult.txt 3000
+    .remove wpresult.txt
+  }
+}
+#wpfinds end
+
+#wpsends off
+on 1:FILESENT:*.mp3,*.wav,*.zip,*.wma:{
+  if ( $qt($filename) != %wp.list ) {
+    inc %wp.sent
+    .notice $nick 13,1Send of8,1 $nopath($filename)  13complete, file number9 %wp.sent 13shared to date.
+  }
+}
+alias -l wp.sendfile {
+  set %wp.findsend 0
+  :wp.getfile
+  inc %wp.findsend
+  set %wp.sendsearch $left( %wp.lookthrough , $pos( %wp.lookthrough , $right( %wp.sendtype , 1 ) , %wp.findsend ) )
+  if ( $right( %wp.sendsearch , 4 ) != $null ) && ( $right( %wp.sendsearch , 4 ) != %wp.sendtype ) { goto wp.getfile }
+  elseif ( $right( %wp.sendsearch , 4 ) == $null ) { 
+    .notice %wp.sendnick 13,1Sorry %wp.sendnick I don't understand the request.
+  }
+  else {
+    var %i 0
+    set %wp.findfile $null
+    while %i < %wp.mp3dirtotal {
+      inc %i
+      if $findfile( $eval(% $+ wp.mp3dir $+ %i,3) , %wp.sendsearch ,1) != $null {
+        set %wp.sendfile $findfile( $eval(% $+ wp.mp3dir $+ %i,3) , %wp.sendsearch ,1)
+      }
+    }
+    var %i 0
+    set %wp.findfile $null
+    while %i < %wp.wavdirtotal {
+      inc %i
+      if $findfile( $eval(% $+ wp.wavdir $+ %i,3) , %wp.sendsearch ,1) != $null {
+        set %wp.sendfile $findfile( $eval(% $+ wp.wavdir $+ %i,3) , %wp.sendsearch ,1)
+      }
+    }
+    var %i 0
+    set %wp.findfile $null
+    while %i < %wp.zipdirtotal {
+      inc %i
+      if $findfile( $eval(% $+ wp.zipdir $+ %i,3) , %wp.sendsearch ,1) != $null {
+        set %wp.sendfile $findfile( $eval(% $+ wp.zipdir $+ %i,3) , %wp.sendsearch ,1)
+      }
+    }
+    var %i 0
+    set %wp.findfile $null
+    while %i < %wp.wmadirtotal {
+      inc %i
+      if $findfile( $eval(% $+ wp.wmadir $+ %i,3) , %wp.sendsearch ,1) != $null {
+        set %wp.sendfile $findfile( $eval(% $+ wp.wmadir $+ %i,3) , %wp.sendsearch ,1)
+      }
+    }
+    if ( %wp.sendfile == $null ) {
+      .notice %wp.sendnick 13,1Sorry %wp.sendnick I don't have that file
+      halt
+    }
+  }
+  return %wp.sendfile
+}
+
+on ^*:text:$(*!*):*:{
+  if $network != DALnet {
+    if ( ! $+ $me isin $1 ) || ( ! $+ %wp.listnick isin $1 ) && ( $nick != $me ) { 
+      set %wp.lookthrough $2-
+      set %wp.sendnick $nick
+      if ( .wav isin %wp.lookthrough ) {
+        set %wp.sendtype .wav
+      }
+      elseif ( .mp3 isin %wp.lookthrough ) { 
+        set %wp.sendtype .mp3
+      }
+      elseif ( .zip isin %wp.lookthrough ) {
+        set %wp.sendtype .zip
+      }
+      elseif ( .wma isin %wp.lookthrough ) {
+        set %wp.sendtype .wma
+      }
+      if $send(0) < %wp.slots {
+        wp.sendfile
+        if %wp.lookthrough != $null {
+          dcc send -n %wp.sendnick %wp.sendfile
+          .notice %wp.sendnick sending14 $nopath( %wp.sendfile ) as requested  
+          unset %wp.sendfile
+        } 
+      }
+      else {
+        .notice %wp.sendnick Sorry %wp.sendnick, all %wp.slots available slots are in use, try again later for $nopath($wp.sendfile) 
+      }
+      close -m $nick
+    }
+  }
+  elseif ( $network == DALnet ) {
+    if ( ! $+ $me isin $1 ) || ( ! $+ %wp.listnick isin $1 )  {
+      .notice $nick 4,5No Sharing In DALnet I'm afraid, this is DALnet policy.
+    }
+  }
+}
+ctcp *:get: {
+  if $network != DALnet {
+    set %wp.lookthrough $2-
+    set %wp.sendnick $nick
+    if ( .wav isin %wp.lookthrough ) {
+      set %wp.sendtype .wav
+    }
+    elseif ( .mp3 isin %wp.lookthrough ) { 
+      set %wp.sendtype .mp3
+    }
+    elseif ( .zip isin %wp.lookthrough ) {
+      set %wp.sendtype .zip
+    }
+    elseif ( .wma isin %wp.lookthrough ) {
+      set %wp.sendtype .wma
+    }
+    if $send(0) < %wp.slots {
+      wp.sendfile
+      if %wp.lookthrough != $null {
+        dcc send -n %wp.sendnick %wp.sendfile
+        .notice %wp.sendnick sending14 $nopath( %wp.sendfile ) as requested  
+        unset %wp.sendfile
+      } 
+    }
+    else {
+      .notice %wp.sendnick Sorry %wp.sendnick, all %wp.slots available slots are in use, try again later for $nopath($wp.sendfile) 
+    }
+    close -m $nick
+    haltdef
+  }
+  elseif ( $network == DALnet ) && ( ( ! $+ $me isin $1 ) || ( ! $+ %wp.listnick isin $1 ) ) {
+    .notice $nick 4,5No Sharing In DALnet I'm afraid, this is DALnet policy.
+  }
+}
+#wpsends end
+
+alias -l wpfinds {
+  if $did(wpmain,18).state == 1 {
+    .enable #wpfinds
+  }
+  else .disable #wpfinds
+}
+
+alias -l wpsends {
+  if $did(wpmain,17).state == 1 {
+    .enable #wpsends
+    did -m wpmain 52
+    set %wp.slots $did(wpmain,52)
+  }
+  else {
+    .disable #wpsends
+    did -n wpmain 52
+  }
+}
+
+alias -l wpsilent {
+  ;if silent is checked
+  if $did(wpmain,35).state == 1 {
+    ;uncheck and disable repeat
+    did -ub wpmain 11
+    .disable #wprepeat
+    ;if random is checked
+    if $did(wpmain,6).state == 1 {
+      .enable #wprandom
+      ;and set random timer
+      .timerwplayer -o 0 180 wprandom
+    }
+    splay stop
+  }
+  ;if silent is unchecked
+  elseif $did(wpmain,35).state == 0 {
+    ;make sure the random timer is off
+    .timerwplayer off
+    ;enable repeat
+    did -e wpmain 11
+    .disable #wprepeat
+    ;check if random play is checked 
+    if $did(wpmain,6).state == 1 {
+      wprandom
+    }
+  }
+}
+
+alias -l wpfolderset {
+  unset %wp.mp3dir* %wp.wavdir* %wp.zipdir* %wp.wmadir*
+  unset %wp.kind
+  wp.select_folder
+}
+
+alias -l wp.select_folder {
+  dialog -md wpfolderset wpfolderset
+  window -Ck0dhrn @wp
+  set %wp.drive $sdir($left($nofile($mircexe),2),Select drive to scan) 
+  wpscandrive
+}
+
+alias -l wpscandrive {
+  if !%wp.kind { set %wp.kind .mp3 }
+  elseif %wp.kind == .mp3 { set %wp.kind .wav }
+  elseif %wp.kind == .wav { set %wp.kind .zip }
+  elseif %wp.kind == .zip { set %wp.kind .wma }
+  elseif %wp.kind == .wma {
+    unset %wp.kind
+    dialog -x wpfolderset
+    if $input(Would you like to add folders from another drive) == $true {
+      wp.select_folder
+    }
+    else {
+      wp.refresh
+      dialog -v wpmain
+      close -@ @wp
+    }
+    halt
+  }
+  close -@ @wp
+  window -Ck0dhrn @wp
+  dialog -x wpfolderset
+  dialog -md wpfolderset wpfolderset
+  wp.foldersearch
+}
+
+alias -l wp.foldersearch {
+  set %wp.wp $findfile( %wp.drive , * $+ %wp.kind , 0 , aline -n @wp $nofile($1-))
+  filter -wo @wp wpfolderset 1  *
+  did -o wpfolderset 2 1 select %wp.kind folders
+}
+on 1:dialog:wpfolderset:sclick:2:{
+  set %wp.selecttotal $did(wpfolderset,1,0).sel
+  set %wp.wp 0
+  set %wp.two 1
+  while %wp.wp < %wp.selecttotal {
+    inc %wp.wp
+    set %wp.foldern $did(wpfolderset,1,%wp.wp).sel
+    :setfolder
+    if !$eval(% $+ wp $+ %wp.kind $+ dir $+ %wp.two,4) { 
+      set % $+ wp $+ %wp.kind $+ dir $+ %wp.two $did(wpfolderset,1,%wp.foldern))
+      set % $+ wp $+ %wp.kind $+ dirtotal %wp.two
+    }
+    else {
+      inc %wp.two
+      goto setfolder
+    }
+  }
+  wpscandrive
+}
+
+
+alias -l wprandsel {
+  if $did(wpmain,6).state == 1 { 
+    did -u wpmain 11
+    .enable #wprandom
+    .disable #wprepeat
+    if %wp.tab == 47 { .timerwplayer -o 0 180 wprandom }
+    if ( !$insong ) && ( !$inwave ) { wprandom }
+  }
+  elseif $did(wpmain,6).state == 0 {
+    .disable #wprandom
+    .disable #wprepeat
+    .timerwplayer off
+  }
+
+  if $did(wpmain,35).state == 1 {
+    wpsilent
+  }
+}
+
+alias -l wprepeat {
+  if $did(wpmain,11).state == 1 {
+    did -u wpmain 6
+    .disable #wprandom
+    .enable #wprepeat
+
+  }
+  elseif $did(wpmain,11).state == 0 {
+    .disable #wprepeat
+  }
+}
+
+#wprepeat off
+on *:mp3end:{
+  if $did(wpmain,11).state == 1 {
+    splay $filename 
+    wp.spam
+  }
+}
+on *:waveend:{
+  if $did(wpmain,11).state == 1 {
+    splay $filename
+    wp.spam
+  }
+}
+#wprepeat end
+
+#wprandom off
+on *:mp3end:{
+  if $did(wpmain,6).state == 1 {
+    wprandom  
+  }
+}
+on *:waveend:{
+  if $did(wpmain,6).state == 1 {
+    wprandom  
+  }
+} 
+#wprandom end
+#wp.playlist off
+on 1:mp3end:{
+  inc %WPlist.song
+  WPlist.song play %WPlist.song
+}
+#wp.playlist end
+on *:mp3end:{
+  if %wp.msnon {
+    msnsong - WP MP3 Player
+  }
+}
+on *:waveend:{
+  if %wp.msnon {
+    msnsong - WP MP3 Player
+  } 
+}
+alias -l wprandom {
+  if $dialog(wpmain) { 
+    if %wp.tab == 47 { 
+      set %wp.playsong $did( wpmain , %wp.tab , $rand( 1 , $did(wpmain,%wp.tab).lines ).text )
+      did -c wpmain %wp.tab $didwm( wpmain , %wp.tab , %wp.playsong ) 
+      wp.spam 
+      return
+    }
+    :getsong
+    set %wp.play $did( wpmain , %wp.tab , $rand( 1 , $did(wpmain,%wp.tab).lines ).text )
+    var %i 0
+    while %i < %wp.mp3dirtotal {
+      inc %i
+      if $findfile( $eval( % $+ wp.mp3dir $+ %i , 3 ) , %wp.play , 1 ) {
+        set %wp.playsong $v1
+        goto play
+      }
+    }
+    var %i 0
+    while %i < %wp.wavdirtotal {
+      inc %i
+      if $findfile( $eval( % $+ wp.wavdir $+ %i , 3 ) , %wp.play , 1 ) {
+        set %wp.playsong $v1
+        goto play
+      }
+    }
+    var %i 0
+    while %i < %wp.wmadirtotal {
+      inc %i
+      if $findfile( $eval( % $+ wp.wmadir $+ %i , 3 ) , %wp.play , 1 ) {
+        set %wp.playsong $v1
+        goto play
+      }
+    }
+    :play
+    did -c wpmain %wp.tab $didwm( wpmain , %wp.tab , $nopath( %wp.playsong ) ) 
+    if $did(wpmain,35).state == 0 {
+      .splay %wp.playsong
+      if $did(wpmain,70).state == 1 { 
+        msnsong - WP MP3 Player - $nopath(%wp.playsong) 
+      }
+      if $did(wpmain,73).state == 1 {
+        wp.onairmakefile
+      }
+    }
+    wp.spam
+  }
+}
+alias -l wpdofind {
+  scid %wp.cid
+  set %wp.dowhat $wpremchar($did(wpmain,13))
+  var %i 0
+  while %i < $numtok(%wp.chan,230) {
+    inc %i
+    if $did(wpmain,24).state == 0 {
+      msg $gettok(%wp.chan,%i,230) @find %wp.dowhat
+    }
+    else .ctcp $gettok(%wp.chan,%i,230) SEARCH $encode(%wp.dowhat)
+  }
+}
+alias -l wpsearch { 
+  set %wp.smp3 $did(wpmain,13)
+  did -r wpmain 15 
+  var %num 0
+  while %num < %wp.mp3dirtotal {
+    inc %num
+    set %wpmp3 $findfile( $eval(% $+ wp.mp3dir $+ %num,3), $wpremchar(%wp.smp3) $+ .mp3,0,0,did -a wpmain 15 $nopath($1-) )
+    unset %wpmp3
+  }
+  var %num 0
+  while %num < %wp.wavdirtotal {
+    inc %num
+    set %wpmp3 $findfile( $eval(% $+ wp.wavdir $+ %num,3), $wpremchar(%wp.smp3) $+ .wav,0,0,did -a wpmain 15 $nopath($1-) )
+    unset %wpmp3
+  }
+  var %num 0
+  while %num < %wp.zipdirtotal {
+    inc %num
+    set %wpmp3 $findfile( $eval(% $+ wp.zipdir $+ %num,3), $wpremchar(%wp.smp3) $+ .zip,0,0,did -a wpmain 15 $nopath($1-) )
+    unset %wpmp3
+  }
+  var %num 0
+  while %num < %wp.wmadirtotal {
+    inc %num
+    set %wpmp3 $findfile( $eval(% $+ wp.wmadir $+ %num,3), $wpremchar(%wp.smp3) $+ .wma,0,0,did -a wpmain 15 $nopath($1-) )
+    unset %wpmp3
+  }
+  if $did(wpmain,15,1) {
+    did -t wpmain 2
+  }
+  else did -t wpmain 67
+  did -z wpmain 15 
+
+}
+alias -l wpremchar { 
+  var %cleanup $strip($+( * , $replace( $1- , $chr(32) , $chr(42) , $chr(42) , $chr(42) , $chr(95) , $chr(42) , $chr(45) , $chr(42) , $chr(46) , $chr(42) , $chr(40) , $chr(42) , $chr(41) , $chr(42) , $chr(39) , $chr(42) , @find , $chr(42) , @locator , $chr(42) , $chr(34) , $chr(42) , @show , $chr(42) , $chr(38) , $chr(42) , $chr(124) , $chr(42) ) , * ))
+  var %i 0
+  while %i < $len(%cleanup) {
+    inc %i
+    var %cleanup $replace( %cleanup , ** , * ) 
+  }
+  return %cleanup
+}
+on ^*:HOTLINK:*:@wp-listmaking-in-progress:{
+  if ( $1 isin %wp.list ) { return }
+  else halt
+}
+on 1:HOTLINK:*:@wp-listmaking-in-progress:run %wp.list
+
+on ^*:HOTLINK:*:*:{
+  if ( $chr(33) isin $hotline ) && ( $me !isin $hotline ) && ( ( .mp3 isin $hotline ) || ( .wma isin $hotline ) || ( .wav isin $hotline ) || ( .zip isin $hotline ) ) { 
+    set %wp.hottype $v1 
+    return
+  }
+  else halt
+}
+
+on 1:HOTLINK:*:*:{
+  if %wp.hottype {
+    if $dialog(wpmain) {
+      var %i 0
+      while $ial(*,%i) {
+        inc %i
+        if ( $ial(*,%i).nick isin $hotline ) && ( $ial(*,%i).nick != $me ) { 
+          set %wp.hotnick $ifmatch
+          if $+(!,%wp.hotnick) isin $hotline {
+            set %wp.hotstart $pos($v2,$v1,1)
+            set %wp.hotstop $pos($v2,%wp.hottype,1)
+            set %wp.hotgrab $mid($v2,%wp.hotstart,$calc(%wp.hotstop - %wp.hotstart +4))
+            if ( $did(wpmain,24).state == 0 ) && ( $left($active,1) == $chr(35) ) {
+              msg $chan %wp.hotgrab
+            } 
+            else {
+              .ctcp %wp.hotnick GET $gettok(%wp.hotgrab,2-,32) 
+              echo -a 0,15[1private14] Stealth request for $gettok(%wp.hotgrab,2-,32) Sent to %wp.hotnick
+            }
+          }
+        }
+      }
+      unset %wp.hot*
+    }
+  }
+}
+
+alias -l wp.grabsong {
+  if ( $me ison $gettok( $did(wpmain,7).seltext , 1 , 32 ) ) {
+    while ( $did(wpmain,7).sel ) {
+      if $did(wpmain,24).state == 0 {
+        msg $did(wpmain,7).seltext 
+        did -d wpmain 7 $did(wpmain,7).sel
+
+      }
+      else {
+        set %wp.stealthchangrab $did(wpmain,7).seltext
+        .ctcp $right($gettok(%wp.stealthchangrab,2,32),-1) GET $gettok(%wp.stealthchangrab,3-,32)
+        did -d wpmain 7 $did(wpmain,7).sel
+        var %i 0
+        while %i < %wp.chantotal {
+          inc %i
+          echo $gettok(%wp.chan,%i,230) 0,15[1private14] Stealth request for $gettok(%wp.stealthchangrab,3-,32) Sent to $right($gettok(%wp.stealthchangrab,2,32),-1)
+        }
+      }
+    }
+  }
+  else {
+    echo 4 -a 0,15[1private14] You are no longer in1 $gettok( $did(wpmain,7).seltext , 1 , 32 ) 4or1 $gettok( $did(wpmain,7).seltext , 1 , 32 ) 4is on another network. 
+    echo 4 -a 0,15[1private14] WP MP3 Player is currently operating in the1 $scid(%wp.cid).network 4network.
+  }
+  did -z wpmain 7
+}
+alias -l wp.playsong {
+  if %wp.tab == 47 { 
+    set %wp.playsong $did(wpmain,%wp.tab).seltext
+    wp.spam 
+    halt 
+  }
+  if $did(wpmain,%wp.tab).seltext {
+    splay stop
+    var %num 0
+    while %num < %wp.mp3dirtotal {
+      inc %num
+      if $findfile( $eval(% $+ wp.mp3dir $+ %num,2) , $did(wpmain,%wp.tab).seltext , 1 ) {
+        set %wp.playsong $v1
+        goto playsong
+      }
+    }
+    var %num 0
+    while %num < %wp.wavdirtotal {
+      inc %num
+      if $findfile( $eval(% $+ wp.wavdir $+ %num,2) , $did(wpmain,%wp.tab).seltext , 1 ) {
+        set %wp.playsong $v1
+        goto playsong
+      }
+    }
+    var %num 0
+    var %num = 0
+    while %num < %wp.wmadirtotal {
+      inc %num
+      if $findfile( $(% $+ wp.wmadir $+ %num,2) , $did(wpmain,%wp.tab).seltext , 1 ) {
+        set %wp.playsong $v1
+        goto playsong
+      }
+    }
+    while %num < %wp.zipdirtotal {
+      inc %num
+      if $findfile( $eval(% $+ wp.zipdir $+ %num,2) , $did(wpmain,%wp.tab).seltext , 1 ) {
+        set %wp.playsong $v1
+        goto playzip
+      }
+    }
+
+    :playsong
+    if $did(wpmain,35).state == 0 {
+      .splay %wp.playsong
+      if $did(wpmain,70).state == 1 { 
+        msnsong - WP MP3 Player - $nopath(%wp.playsong) 
+      }
+      if $did(wpmain,73).state == 1 {
+        wp.onairmakefile
+      }
+    }
+
+    :playzip
+    wp.spam
+    return %wp.playsong
+  }
+}
+
+;;;;;;;;;;
+;OnAirNow;
+;;;;;;;;;;
+
+dialog WPOnAirNow {
+  title "WP MP3 Player - (onAirNow for WordPress Plugin)"
+  size -1 -1 220 80
+  option dbu
+  edit "FTP Server", 1, 125 5 90 10
+  edit "login(UserName)", 2, 125 17 90 10
+  edit "Password", 3, 125 29 90 10, pass
+  edit "Password", 4, 125 41 90 10, pass
+  edit "FTP Directory", 5, 125 53 90 10, autohs
+  button "Save FTP Settings", 6, 125 65 90 10
+  text "FTP Server address eg. ftp.yourdomain.com", 7, 5 5 115 8
+  text "FTP login - User Name", 8, 5 17 115 8
+  text "FTP login - Password", 9, 5 29 115 8
+  text "FTP login - Repeat Password", 10, 5 41 115 8
+  text "FTP Directory ( Use / for root login directory)", 11, 5 53 115 8
+  link "onAirNow HomePage", 12, 5 65 55 8
+}
+menu channel,status {
+  WP MP3 Player
+  .-
+  .onAirNow for WordPress Plugin
+  ..Edit FTP Settings:$iif($dialog(onair),dialog -v,dialog -md) onair WPOnAirNow
+}
+on *:dialog:onair:init:0:{
+  if %wp.onairftpserver { did -o onair 1 1 $v1 }
+  if %wp.onairftpuser { did -o onair 2 1 $v1 }
+  if %wp.onairftppass { did -o onair 3,4 1 $decode($v1) }
+  if %wp.onairftppath { did -o onair 5 1 $v1 }
+}
+
+on *:dialog:onair:sclick:*:{
+  if $did == 6 { wp.onairftpset }
+  elseif $did == 12 { run http://cinnamonthoughts.org/wordpress/onairnow/ }
+}
+alias -l wp.onairftpset {
+  if $did(onair,1) && ( $did(onair,1) != FTP Server ) { 
+    write -c wponair.oan ftp
+    write wponair.oan open $v1
+    set %wp.onairftpserver $v1
+  }
+  else {
+    var %i $input(No FTP Server Address!,hc)
+    dialog -v onair
+    halt
+  }
+  if $did(onair,2) && ( $did(onair,2) != login(UserName) ) { 
+    write wponair.oan $v1
+    set %wp.onairftpuser $v1
+  }
+  else {
+    var %i $input(No FTP User Name!,hc)
+    dialog -v onair
+    halt
+  }
+  if $did(onair,3) && $did(onair,4) && ( $did(onair,3) == $did(onair,4) ) { 
+    write wponair.oan $v1
+    set %wp.onairftppass $encode($v1)
+  }
+  elseif ( $did(onair,3) != $did(onair,4) ) {
+    var %i $input(Password Mis-match,wo)
+    dialog -v onair
+    halt
+  }
+  else {
+    var %i $input(No FTP Password!,hc)
+    dialog -v onair
+    halt
+  }
+  if $did(onair,5) { 
+    write wponair.oan cd $v1
+    set %wp.onairftppath $v1
+  }
+  else {
+    write wponair.oan cd /
+    set %wp.onairftppath /
+  }
+  dialog -x onair
+  write wponair.oan put $qt($scriptdironAirNow.track)
+  write wponair.oan quit
+  var %i $input(Settings Saved,io)
+}
+alias -l wp.onairmakefile {
+  write -c $qt($scriptdironAirNow.track)
+  if $sound(%wp.playsong).artist { write $qt($scriptdironAirNow.track) <artist> $v1 </artist> }
+  if $sound(%wp.playsong).title { write $qt($scriptdironAirNow.track) <title> $v1 </title> }
+  if $sound(%wp.playsong).album { write $qt($scriptdironAirNow.track) <album> $v1 </album> }
+  if $sound(%wp.playsong).year { write $qt($scriptdironAirNow.track) <year> $v1 </year> }
+  if $sound(%wp.playsong).track { write $qt($scriptdironAirNow.track) <track> $v1 </track> }
+  if $sound(%wp.playsong).length { write $qt($scriptdironAirNow.track) <time> $round( $calc( $v1 / 1000 ) , 0 ) </time> }
+  write $qt($scriptdironAirNow.track) <file> $nopath(%wp.playsong) </file> 
+  wp.onairuploadfile
+}
+
+alias -l wp.onairuploadfile {
+  run -n ftp -i -s:wponair.oan
+}
+
+alias -l wponairnow {
+  if %wp.onairftpserver { 
+    if $did(wpmain,73).state == 0 {
+      did -c wpmain 73
+      set %wp.onair on
+    }
+    else {
+      did -u wpmain 73
+      unset %wp.onair
+    }
+  }
+  else {
+    $iif($dialog(onair),dialog -v,dialog -md) onair WPOnAirNow
+  }
+}
+;;;;;;;;;;;;;;;;;
+;End of OnAirNow;
+;;;;;;;;;;;;;;;;;
+
+
+
+alias -l wpmessages {
+  set %wp.messfile $$sfile($scriptdir,Select Play Messages File)
+}
+alias -l wp.message {
+  set %wp.message $read(%wp.messfile)
+  return %wp.message
+}
+alias -l wpslots {
+  if $did(wpmain,33).state == 1 {
+    wpshowslots
+    .timerwpslotshow -o 0 600 wpshowslots 
+  }
+  else .timerwpslotshow off
+}
+alias -l wpshowslots {
+  scid %wp.cid 
+  if $server {
+    if ( $calc( %wp.slots - $send(0) ) > 0 ) {
+      set %wp.slottime NOW
+    }
+    else set %wp.slottime 2m
+    var %i 0
+    while %i < %wp.chantotal {
+      inc %i
+      if ( $gettok(%wp.chan,%i,230) != Status Window ) && ( $me ison $gettok(%wp.chan,%i,230) ) {
+        .ctcp $gettok(%wp.chan,%i,230) SLOTS %wp.slots $calc( %wp.slots - $send(0) ) %wp.slottime 0 999 0 %wp.listfiles %wp.totfilesize 0 %wp.listtime2 $uptime(server,3) WP-MP3-Player 
+      }
+    }
+  }
+}
+alias -l wp.spam {
+  scid %wp.cid
+  did -c wpmain 66 0
+  if $did(wpmain,16).state == 1 {
+    var %i 0
+    while %i < %wp.chantotal {
+      inc %i
+      if ( $gettok(%wp.chan,%i,230) != Status Window ) && ( $me ison $gettok(%wp.chan,%i,230) ) {
+        if ( $right(%wp.playsong,3) != wav ) { set %wp.messtype $v1 }
+        else set %wp.messtype SOUND
+        if $did(wpmain,17).state == 1 && ( $network != DALnet ) {
+          .ctcp $gettok(%wp.chan,%i,230) %wp.messtype $nopath(%wp.playsong)
+          msg $gettok(%wp.chan,%i,230) 13,1Type8 ! $+ $me $nopath(%wp.playsong) 13To get this8 $bytes($file( %wp.playsong ).size,m).suf 13 $+ %wp.messtype file. 8,8 13,13 0,1 $wp.message 13,13 8,8 15,1 WP MP3 Player
+        }
+        else msg $gettok(%wp.chan,%i,230) 13,1Now Playing8 $nopath(%wp.playsong) 13which is a8 $bytes($file( %wp.playsong ).size,m).suf 13 $+ %wp.messtype file. 8,8 13,13 0,1 $wp.message 13,13 8,8 15,1 WP MP3 Player
+      }
+    }
+    elseif ( $gettok(%wp.chan,%i,230) == Status Window )  {
+      echo -s 0,15[1private14] Now Playing $nopath(%wp.playsong)
+    }
+    else halt
+  }
+  else {
+    var %i 0
+    while %i < %wp.chantotal {
+      inc %i
+      if ( $me ison $gettok(%wp.chan,%i,230) ) {
+        echo $gettok(%wp.chan,%i,230) 0,15[1private14] Now Playing $nopath(%wp.playsong)
+      }
+      else echo -s 0,15[1private14] Now Playing $nopath(%wp.playsong)
+    }
+    if %wp.chantotal == 0 { echo -s 0,15[1private14] Now Playing $nopath(%wp.playsong) }
+  }
+}
+ctcp *:sound: {
+  if ( $dialog(wpmain) ) && ( $right($2,4) == .wav ) && ( !$didwm( wpmain , 10 , $2 ) ) && ( $cid == %wp.cid ) { 
+    did -i wpmain 7 1 $chan ! $+ $nick $2 
+  }
+  elseif ( $dialog(wpmain) ) && ( $right($2-,4) == .wav ) && ( !$didwm( wpmain , 10 , $2- ) ) && ( $cid == %wp.cid ) { 
+    did -i wpmain 7 1 $chan ! $+ $nick $2- 
+  }
+  elseif ( $dialog(wpmain) ) && ( $right($2-,4) == .mp3 ) && ( !$didwm( wpmain , 1 , $2- ) ) && ( $cid == %wp.cid ) { 
+    did -i wpmain 7 1 $chan ! $+ $nick $2- 
+  }
+  if $dialog(wpmain) { did -z wpmain 7 }
+  haltdef
+  if ( ( $dialog(wpmain) ) && ( $did(wpmain,71).state == 1 ) ) {
+    if $didwm( wpmain , 10 , $2- ) { 
+      if $did(wpmain,35).state == 0 {
+        var %num 0
+        while %num < %wp.wavdirtotal {
+          inc %num
+          if $findfile( $eval(% $+ wp.wavdir $+ %num,2) , $2- , 1 ) {
+            .splay $v1
+            halt
+          }
+        }
+      }
+    }
+  }
+}
+ctcp *:*mp3: {
+  if ( $dialog(wpmain) ) && ( !$didwm( wpmain , 1 , $2- ) ) && ( $cid == %wp.cid ) { 
+    did -i wpmain 7 1 $chan ! $+ $nick $2- 
+    did -z wpmain 7
+  }
+  haltdef
+}
+ctcp *:*wma: {
+  if ( $dialog(wpmain) ) && ( !$didwm( wpmain , 49 , $2- ) ) && ( $cid == %wp.cid ) { 
+    did -i wpmain 7 1 $chan ! $+ $nick $2- 
+    did -z wpmain 7
+  }
+  haltdef
+}
+ctcp *:SLOTS: {
+  haltdef
+}
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;        W-P-Listmaker          ;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+alias -l wpmakelist {
+  if $did(wpmain,41).state == 1 { set %wp.how F }
+  else set %wp.how S
+  if $did(wpmain,42).state == 1 { set %wp.listmp3s $true }
+  else set %wp.listmp3s $false
+  if $did(wpmain,43).state == 1 { set %wp.listwavs $true }
+  else set %wp.listwavs $false
+  if $did(wpmain,51).state == 1 { set %wp.listzips $true }
+  else set %wp.listzips $false
+  if $did(wpmain,62).state == 1 { set %wp.listwmas $true }
+  else set %wp.listwmas $false
+  if $did(wpmain,44).state == 1 { 
+    set %wp.addtext $true 
+    set %wp.disctot $did(wpmain,45).lines
+    var %i 0
+    while %i < %wp.disctot {
+      inc %i
+      set % $+ wp.disclaimer $+ %i $did(wpmain,45,%i).text 
+    }
+    if ( $eval( % $+ wp.disclaimer $+ %wp.disctot , 3 ) == $null ) { 
+      unset % $+ wp.disclaimer $+ %wp.disctot 
+      dec %wp.disctot
+    }
+  }
+  else set %wp.addtext $false
+  if $did(wpmain,26).state == 1 { set %wp.sizes Y }
+  else set %wp.sizes N
+  if $did(wpmain,27).state == 1 { set %wp.bitrate Y }
+  else set %wp.bitrate N
+  wp.makemusiclist
+}
+
+alias -l wp.makemusiclist {
+  if %wp.list { 
+    .remove %wp.list 
+    if $isfile($+(",$left($noqt(%wp.list),-4),.txt,")) {
+      .remove $+(",$left($noqt(%wp.list),-4),.txt,")
+    }
+  }
+  unset %wp.totwav %wp.totmp3 %wp.totzip %wp.totwma %wp.totwavs %wp.totmp3s %wp.totzips %wp.totwmas
+  set %wp.listnick $mkfn($did(wpmain,34) ) 
+  window -Ck0dao @wp-Listmaking-in-progress -1 -1 800 100
+  set %wp.listfiles 0  
+  set %wp.listtime $ctime
+  set %wp.num 0
+  inc %wp.num
+  set %wp.list $qt( $scriptdir $+ %wp.listnick $+ -[ $+ $Replace($adate,/,-) $+ ]-wp.txt )
+  if %wp.num == 1 {
+    write -c %wp.list -------------------------------------------------
+    write -i %wp.list -------------------------------------------------
+    write -i %wp.list ----=====<        W-P Listmaker        >=====----
+    write -i %wp.list ------------------------------------------------- 
+    write -i %wp.list ------------------------------------------------- 
+    write -i %wp.list
+  }
+  if %wp.addtext == $true { 
+    var %i 0
+    while %i < %wp.disctot {
+      inc %i
+      write -i %wp.list $eval(% $+ wp.disclaimer $+ %i , 3 )
+    }
+  }
+  set %wp.totfilesize 0
+  if %wp.how == F {
+    if %wp.listmp3s == $true { wp.makemp3list }
+    if %wp.listwavs == $true { wp.makewavlist }
+    if %wp.listzips == $true { wp.makeziplist }
+    if %wp.listwmas == $true { wp.makewmalist }
+  }
+  elseif %wp.how == S {
+    if %wp.listmp3s == $true { wp.makemp3list.s }
+    if %wp.listwavs == $true { wp.makewavlist.s }
+    if %wp.listzips == $true { wp.makeziplist.s }
+    if %wp.listwmas == $true { wp.makewmalist.s }
+
+    set %wp.listfiles $calc( %wp.totwav + %wp.totmp3 + %wp.totzip + %wp.totwma )
+  }
+  set %wp.listtime2 $ctime
+  set %wp.listsecs $eval( $calc( %wp.listtime2 - %wp.listtime ) , 2 )
+  write %wp.list  
+  write %wp.list ----=====<        W-P Listmaker        >=====----
+  write %wp.list   
+  write %wp.list Total %wp.listfiles files.
+  write %wp.list List made in $eval( $calc( %wp.listtime2 - %wp.listtime ) , 3 ) second(s). ( $int($calc( %wp.listfiles / %wp.listsecs )) files per second )
+  write %wp.list   
+  set %wp.musiclistmakerdate $time(h:nntt dddd ddoo mmmm yyyy )
+  write -il7 %wp.list Total %wp.listfiles files. ( $bytes(%wp.totfilesize , m).suf total )
+  write -il8 %wp.list List made in $eval( $calc( %wp.listtime2 - %wp.listtime ) , 3 ) second(s). ( $int($calc( %wp.listfiles / %wp.listsecs )) files per second )
+  write -il9 %wp.list Updated at %wp.musiclistmakerdate
+  write -il10 %wp.list
+  if $did(wpmain,72).state == 1 { 
+    run -n $scriptdir7z.exe a -tzip $+(", $left($noqt(%wp.list),-4) , .zip," ) %wp.list
+    set %wp.list $+(", $left($noqt(%wp.list),-4) , .zip," )
+  }
+  echo @wp-listmaking-in-progress 12,15List saved as4 %wp.list 12<-- Double click to view
+  echo @wp-listmaking-in-progress 12,15List took4 $eval( $calc( %wp.listtime2 - %wp.listtime ) , 2 ) 12second(s) to make
+  window -au @wp-Listmaking-in-progress 
+}
+alias -l wp.parsefiles {
+  set %wp.parsesize $file($2-).size
+  if $1 == 1 {
+    aline @billy ! $+ %wp.listnick $nopath($2-) $chr(9) $chr(9) ::INFO:: $bytes(%wp.parsesize,m).suf
+  }
+  elseif $1 == 2 {
+    aline @billy ! $+ %wp.listnick $nopath($2-)
+  }
+  elseif $1 == 3 {
+    aline @billy ! $+ %wp.listnick $nopath($2-) $chr(9) $chr(9) ::INFO:: $bytes(%wp.parsesize,m).suf $sound($2-).bitrate $+ / $+ $calc($sound($2-).sample / 1000 ) $+ / $+ $sound($2-).mode 
+  }
+  elseif $1 == 4 {
+    aline @billy ! $+ %wp.listnick $nopath($2-) $chr(9) $chr(9) ::INFO:: $sound($2-).bitrate $+ / $+ $calc($sound($2-).sample / 1000 ) $+ / $+ $sound($2-).mode 
+  }
+  inc %wp.totfilesize %wp.parsesize
+}
+alias -l wp.makemp3list {
+  set %wp.num 0
+  while %wp.num < %wp.mp3dirtotal {
+    inc %wp.num 
+    set %wp.lmdir $eval( % $+ wp.mp3dir $+ %wp.num , 3 ) 
+    window -hnls @billy
+    if %wp.sizes == Y && %wp.bitrate == N {
+      noop $findfile($eval( % $+ wp.mp3dir $+ %wp.num , 3 ), *.mp3, 0,0 , wp.parsefiles 1 $1- )
+    }
+    elseif %wp.sizes == N && %wp.bitrate == N {
+      noop $findfile($eval( % $+ wp.mp3dir $+ %wp.num , 3 ), *.mp3, 0,0 , wp.parsefiles 2 $1- )
+    }
+    elseif %wp.sizes == Y && %wp.bitrate == Y {
+      noop $findfile($eval( % $+ wp.mp3dir $+ %wp.num , 3 ), *.mp3, 0,0 , wp.parsefiles 3 $1- )
+    }
+    elseif %wp.sizes == N && %wp.bitrate == Y {
+      noop $findfile($eval( % $+ wp.mp3dir $+ %wp.num , 3 ), *.mp3, 0,0 , wp.parsefiles 4 $1- )
+    }
+    set %wp.totmp3s $line(@billy,0)
+    if %wp.totmp3s != 0 {
+      write -i %wp.list
+      write -i %wp.list $str(=,$len(Total %wp.totmp3s mp3 Files in %wp.lmdir))
+      write -i %wp.list Total %wp.totmp3s mp3 Files in %wp.lmdir 
+      write -i %wp.list $str(=,$len(Total %wp.totmp3s mp3 Files in %wp.lmdir))
+      filter -wf @billy %wp.list 
+    }
+    close -@ @billy
+    inc %wp.totmp3 %wp.totmp3s
+    inc %wp.listfiles %wp.totmp3s
+  }
+  set %wp.num 0
+  return
+}
+
+alias -l wp.makewavlist {
+  set %wp.num 0
+  while %wp.num < %wp.wavdirtotal { 
+    inc %wp.num 
+    set %wp.lmdir $eval( % $+ wp.wavdir $+ %wp.num , 3 ) 
+    window -hnls @billy
+    if %wp.sizes == Y  {
+      noop $findfile($eval( % $+ wp.wavdir $+ %wp.num , 3 ), *.wav, 0,0 , wp.parsefiles 1 $1- )
+    }
+    else {
+      noop $findfile($eval( % $+ wp.wavdir $+ %wp.num , 3 ), *.wav, 0,0 , wp.parsefiles 2 $1- )
+    }
+    set %wp.totwavs $line(@billy,0)
+    if %wp.totwavs != 0 { 
+      write -i %wp.list
+      write -i %wp.list $str(=,$len(Total %wp.totwavs wav Files in %wp.lmdir))
+      write -i %wp.list Total %wp.totwavs wav Files in %wp.lmdir 
+      write -i %wp.list $str(=,$len(Total %wp.totwavs wav Files in %wp.lmdir))
+      filter -wf @billy %wp.list 
+    }
+    close -@ @billy
+    inc %wp.totwav %wp.totwavs
+    inc %wp.listfiles %wp.totwavs
+  }
+  set %wp.num 0
+  return
+}
+
+alias -l wp.makeziplist {
+  set %wp.num 0
+  while %wp.num < %wp.zipdirtotal { 
+    inc %wp.num 
+    set %wp.lmdir $eval( % $+ wp.zipdir $+ %wp.num , 3 ) 
+    window -hnls @billy
+    if %wp.sizes == Y {
+      noop $findfile($eval( % $+ wp.zipdir $+ %wp.num , 3 ), *.zip, 0,0 , wp.parsefiles 1 $1- )
+    }
+    else {
+      noop $findfile($eval( % $+ wp.zipdir $+ %wp.num , 3 ), *.zip, 0,0 , wp.parsefiles 2 $1- )
+    }
+    set %wp.totzips $line(@billy,0)
+    if %wp.totzips != 0 {
+      write -i %wp.list
+      write -i %wp.list $str(=,$len(Total %wp.totzips zip Files in %wp.lmdir))
+      write -i %wp.list Total %wp.totzips zip Files in %wp.lmdir 
+      write -i %wp.list $str(=,$len(Total %wp.totzips zip Files in %wp.lmdir))
+      filter -wf @billy %wp.list 
+    }
+    close -@ @billy
+    inc %wp.totzip %wp.totzips
+    inc %wp.listfiles %wp.totzips
+  }
+  set %wp.num 0
+  return
+}
+alias -l wp.makewmalist {
+  set %wp.num 0
+  while %wp.num < %wp.wmadirtotal { 
+    inc %wp.num 
+    set %wp.lmdir $eval( % $+ wp.wmadir $+ %wp.num , 3 ) 
+    window -hnls @billy
+    if %wp.sizes == Y {
+      noop $findfile($eval( % $+ wp.wmadir $+ %wp.num , 3 ), *.wma, 0,0 , wp.parsefiles 1 $1- )
+    }
+    else {
+      noop $findfile($eval( % $+ wp.wmadir $+ %wp.num , 3 ), *.wma, 0,0 , wp.parsefiles 2 $1- )
+    }
+    set %wp.totwmas $line(@billy,0)
+    if %wp.totwmas != 0 {
+      write -i %wp.list
+      write -i %wp.list $str(=,$len(Total %wp.totwmas wma Files in %wp.lmdir))
+      write -i %wp.list Total %wp.totwmas wma Files in %wp.lmdir 
+      write -i %wp.list $str(=,$len(Total %wp.totwmas wma Files in %wp.lmdir))
+      filter -wf @billy %wp.list 
+    }
+    close -@ @billy
+    inc %wp.totwma %wp.totwmas
+    inc %wp.listfiles %wp.totwmas
+  }
+  set %wp.num 0
+  return
+}
+
+
+alias -l wp.makemp3list.s {
+  set %wp.num 0
+  while %wp.num < %wp.mp3dirtotal { 
+    inc %wp.num 
+    set %wp.lmdir $eval( % $+ wp.mp3dir $+ %wp.num , 3 ) 
+    window -hnls @billy
+    if %wp.sizes == Y && %wp.bitrate == N {
+      noop $findfile($eval( % $+ wp.mp3dir $+ %wp.num , 3 ), *.mp3, 0,0 , wp.parsefiles 1 $1-)
+    }
+    elseif %wp.sizes == N && %wp.bitrate == N {
+      noop $findfile($eval( % $+ wp.mp3dir $+ %wp.num , 3 ), *.mp3, 0,0 , wp.parsefiles 2 $1- )
+    }
+    elseif %wp.sizes == Y && %wp.bitrate == Y {
+      noop $findfile($eval( % $+ wp.mp3dir $+ %wp.num , 3 ), *.mp3, 0,0 , wp.parsefiles 3 $1- )
+    }
+    elseif %wp.sizes == N && %wp.bitrate == Y {
+      noop $findfile($eval( % $+ wp.mp3dir $+ %wp.num , 3 ), *.mp3, 0,0 , wp.parsefiles 4 $1- )
+    }
+    set %wp.totmp3 $line(@billy,0)
+  }
+  if %wp.totmp3 {
+    write -i %wp.list
+    write -i %wp.list $str(=,$len(Total %wp.totmp3 mp3 Files))
+    write -i %wp.list Total %wp.totmp3 mp3 Files
+    write -i %wp.list $str(=,$len(Total %wp.totmp3 mp3 Files))
+    filter -wf @billy %wp.list 
+  }
+  close -@ @billy
+  set %wp.num 1
+}
+
+alias -l wp.makewavlist.s {
+  set %wp.num 0
+  while %wp.num < %wp.wavdirtotal { 
+    inc %wp.num 
+    set %wp.lmdir $eval( % $+ wp.wavdir $+ %wp.num , 3 ) 
+    window -hnls @billy
+    if %wp.sizes == Y {
+      noop $findfile($eval( % $+ wp.wavdir $+ %wp.num , 3 ), *.wav, 0,0 , wp.parsefiles 1 $1- )
+    }
+    else {
+      noop $findfile($eval( % $+ wp.wavdir $+ %wp.num , 3 ), *.wav, 0,0 , wp.parsefiles 2 $1- )
+    }
+    set %wp.totwav $line(@billy,0)
+  }
+  if %wp.totwav {
+    write -i %wp.list
+    write -i %wp.list $str(=,$len(Total %wp.totwav wav Files))
+    write -i %wp.list Total %wp.totwav wav Files
+    write -i %wp.list $str(=,$len(Total %wp.totwav wav Files))
+    filter -wf @billy %wp.list 
+  }
+  close -@ @billy
+  set %wp.num 1
+}
+alias -l wp.makewmalist.s {
+  set %wp.num 0
+  while %wp.num < %wp.wmadirtotal { 
+    inc %wp.num   set %wp.lmdir $eval( % $+ wp.wmadir $+ %wp.num , 3 ) 
+    window -hnls @billy
+    if %wp.sizes == Y {
+      noop $findfile($eval( % $+ wp.wmadir $+ %wp.num , 3 ), *.wma, 0,0 , wp.parsefiles 1 $1- )
+    }
+    else {
+      noop $findfile($eval( % $+ wp.wmadir $+ %wp.num , 3 ), *.wma, 0,0 , wp.parsefiles 2 $1- )
+    }
+    set %wp.totwma $line(@billy,0)
+  }
+  if %wp.totwma {
+    write -i %wp.list
+    write -i %wp.list $str(=,$len(Total %wp.totwma wma Files))
+    write -i %wp.list Total %wp.totwma wma Files
+    write -i %wp.list $str(=,$len(Total %wp.totwma wma Files))
+    filter -wf @billy %wp.list 
+  }
+  close -@ @billy
+  set %wp.num 1
+}
+alias -l wp.makeziplist.s {
+  set %wp.num 0
+  while %wp.num < %wp.zipdirtotal { 
+    inc %wp.num 
+    set %wp.lmdir $eval( % $+ wp.zipdir $+ %wp.num , 3 ) 
+    window -hnls @billy
+    if %wp.sizes == Y {
+      noop $findfile($eval( % $+ wp.zipdir $+ %wp.num , 3 ), *.zip, 0,0 , wp.parsefiles 1 $1- )
+    }
+    else {
+      noop $findfile($eval( % $+ wp.zipdir $+ %wp.num , 3 ), *.zip, 0,0 , wp.parsefiles 2 $1- )
+    }
+    set %wp.totzip $line(@billy,0)
+  }
+  if %wp.totzip {
+    write -i %wp.list
+    write -i %wp.list $str(=,$len(Total %wp.totzip zip Files))
+    write -i %wp.list Total %wp.totzip zip Files
+    write -i %wp.list $str(=,$len(Total %wp.totzip zip Files))
+    filter -wf @billy %wp.list 
+  }
+  close -@ @billy
+  set %wp.num 1
+}
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;                   Renamer                   ;            Added 06 June 2006           ;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;  If this doesnt work on your machine, or
+;;;;;;;;;;   Script by billythekid   ;;;;;;;;;;  you have any questions, please don't
+;;;;;;;;;; Find me in #IRCWavPlayers ;;;;;;;;;;  hesitate to get in touch.
+;;;;;;;;;;  On PhaZeNet and DALnet   ;;;;;;;;;;  All my scripts can be found at 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;  http://billy.the-kid.org
+
+;;;;;;;;;
+;Dialogs;
+;;;;;;;;;
+
+dialog -l btkmp3 {
+  title "btk renamer mp3 select"
+  size -1 -1 405 340
+  option dbu notheme
+  list 1, 5 5 395 310, sort size extsel
+  text Please select files you wish renamed. These will be done one at a time so don't pick too many! To select more than one file hold down ctrl and click(or drag over all files req'd), 2, 5 320 235 15
+  button "Rename Selection", 3, 350 317 50 20
+}
+dialog -l btkrename {
+  title "btk-renamer"
+  size -1 -1 530 140
+  option dbu notheme
+  box "Rename Settings (This will not affect the ID3 tags, only the filename)", 1, 270 5 255 130
+  text "Preview :", 2, 275 103 23 10
+  text %wp.rn.preview, 3, 300 103 220 15
+  check "Artist", 4, 280 25 30 10, disable left
+  check "Album", 5, 280 35 30 10, disable left
+  check "Track", 6, 280 45 30 10, disable left
+  check "Title", 7, 280 55 30 10, disable left
+  check "Year", 8, 280 65 30 10, disable left
+  check "Genre", 9, 280 75 30 10, disable left
+  text "Use Original", 16, 292 15 29 8
+  edit %wpsetup, 18, 275 90 205 12, disable
+  box "", 19, 265 5 1 110
+  box "Current Info (From ID3 tags)", 20, 5 5 255 110
+  text "Current Name:", 21, 10 100 36 10
+  text $nopath(%wp.rn.origfile), 22, 50 100 205 10
+  text $nofile(%wp.rn.origfile), 23, 50 90 205 8, hide
+  text "Artist", 24, 10 25 25 8
+  text "Album", 25, 10 35 25 8
+  text "Track", 26, 10 45 25 8
+  text "Title", 27, 10 55 25 8
+  text "Year", 28, 10 65 25 8
+  text "Genre", 29, 10 75 25 8
+  edit "", 30, 315 25 205 10, disable
+  edit "", 31, 315 35 205 10, disable
+  edit "", 32, 315 45 205 10, disable
+  edit "", 33, 315 55 205 10, disable
+  edit "", 34, 315 65 205 10, disable
+  edit "", 35, 315 75 205 10, disable
+  edit "Artist Name", 36, 40 25 215 10, disable
+  edit "Album Name", 37, 40 35 215 10, disable
+  edit "Track Number", 38, 40 45 215 10, disable
+  edit "Track Name", 39, 40 55 215 10, disable
+  edit "Year Recorded", 40, 40 65 215 10, disable
+  edit "Genre/Style", 41, 40 75 215 10, disable
+  button "Rename", 43, 485 120 37 12, disable
+  button "Preview In Status", 10, 300 120 50 12, disable
+  button "Cancel", 11, 445 120 37 12, disable
+  button "Play File", 12, 5 120 37 12, disable
+  button "Delete File", 13, 45 120 37 12, disable
+  button "Default", 14, 480 90 37 10
+  menu "Get Files", 44
+  item "Get Files", 45, 44
+}
+
+;;;;;;;
+;Menus;
+;;;;;;;
+
+Menu Status {
+  MP3 Renamer:btkopen
+}
+
+;;;;;;;;
+;Events;
+;;;;;;;;
+
+on 1:dialog:btkrename:close:0:{
+  .remove btktemp.txt
+}
+on 1:dialog:btkrename:edit:*:{
+  btkrefresh
+}
+on 1:dialog:btkrename:sclick:*:{
+  if $did == 43 { btkrename }
+  elseif ( ( 4 <= $did ) && ( $did <= 9 ) ) { 
+    btkenabling 
+  }
+  elseif $did == 10 { btkpreview }
+  elseif $did == 11 { btkimport }
+  elseif $did == 12 { splay $qt(%wp.rn.origfile) }
+  elseif $did == 13 { btkdelete }
+  elseif $did == 14 { 
+    set %wpsetup [&genre]&artist_&album(&year)_Track-&track---&title
+    did -o btkrename 18 1 %wpsetup 
+  } 
+}
+on 1:dialog:btkrename:menu:45:{
+  if $dialog(wpmain) {
+    dialog -x btkrename
+    dialog -md btkrename btkrename
+    dialog -md btkmp3 btkmp3 
+  }
+  else {
+    var %i 0
+    while %i < 45 {
+      inc %i
+      did -h btkrename %i
+    }
+    did -r btkrename 23
+    did -a btkrename 23 WP MP3 Player is not open, Please reopen WP MP3 Player and try again!
+    did -v btkrename 23
+  }
+}
+on 1:dialog:btkmp3:sclick:*:{
+  if $did == 3 {
+    btkpullmp3s 
+    btkimport
+  }
+}
+on 1:dialog:btkmp3:init:0:{
+  wp.refresh
+  var %i 0
+  while %i < $did(wpmain,1).lines {
+    inc %i
+    did -a btkmp3 1 $did(wpmain,1,%i)
+  }
+}
+
+;;;;;;;;;
+;Aliases;
+;;;;;;;;;
+
+Alias -l btkopen {
+  if !%wpsetup { set %wpsetup [&genre]&artist_&album(&year)_Track-&track---&title }
+  if !$dialog(btkrename) {
+    unset %wp.rn.*
+    dialog -md btkrename btkrename
+  }
+  else dialog -v btkrename
+}
+alias -l btkrename {
+  .reseterror
+  .rename $qt(%wp.rn.origfile) $qt($did(btkrename,23) $+ %wp.rn.manpreview $+ .mp3)
+  if $error { 
+    var %i == $input($error , wo, btk renamer)
+  }
+  else {
+    echo -s 15,12<<9  Rename  15>>8 Folder : $did(btkrename,23)
+    echo -s 15,12<<9Successful15>>8 $qt($nopath(%wp.rn.origfile)) to %wp.rn.manpreview $+ .mp3
+    btkimport
+  }
+}
+alias -l btkpreview {
+  echo -s 15,12<<Preview!>>8 Folder : $did(btkrename,23)
+  echo -s 15,12<<Preview!>>8 $qt($nopath(%wp.rn.origfile)) to %wp.rn.manpreview $+ .mp3
+  echo -s 15,12<<Preview!>>8 If you wish to rename the file click Rename
+  echo -s 15,12<<Preview!>>8 Otherwise click Cancel for the next file.
+}
+Alias -l btkpullmp3s {
+  write -c btktemp.txt
+  while ( $did(btkmp3,1).sel ) {
+    write btktemp.txt $did(btkmp3,1).seltext
+    did -d btkmp3 1 $did(btkmp3,1).sel
+  }
+  dialog -x btkmp3
+}
+Alias -l btkimport {
+  if $read(btktemp.txt,1) {
+    btksetvars
+    did -r btkrename 30,31,32,33,34,35,36,37,38,39,40,41,3
+    btkshowinfo
+    did -e btkrename 4,5,6,7,8,9,30,31,32,33,34,35,18,10,11,12,13,43
+  }
+  else {
+    did -r btkrename 30,31,32,33,34,35,36,37,38,39,40,41,3,22
+    did -b btkrename 4,5,6,7,8,9,30,31,32,33,34,35,18,10,11,12,13,43
+    var %i $input(No Files Selected or End of Selection,wo,btk renamer)
+    wp.refresh
+  } 
+}
+alias -l btksetvars {
+  var %i 0
+  while %i < %wp.mp3dirtotal {
+    inc %i
+    if $findfile( $eval(% $+ wp.mp3dir $+ %i , 2 ) , $read(btktemp.txt,1) , 1 ) {
+      set %wp.rn.origfile $ifmatch
+    }
+  }
+  write -dl1 btktemp.txt
+  set %wp.rn.artist $sound(%wp.rn.origfile).artist
+  set %wp.rn.album $sound(%wp.rn.origfile).album
+  set %wp.rn.track $sound(%wp.rn.origfile).track
+  set %wp.rn.title $sound(%wp.rn.origfile).title
+  set %wp.rn.year $sound(%wp.rn.origfile).year
+  set %wp.rn.genre $sound(%wp.rn.origfile).genre
+  set %wp.rn.key &artist &album &track &title &year &genre
+  btksetrefresh
+}
+alias -l btksetrefresh {
+  set %wp.rn.preview %wp.rn.artist $+ & $+ %wp.rn.album $+ & $+ %wp.rn.track $+ & $+ %wp.rn.title $+ & $+ %wp.rn.year $+ & $+ %wp.rn.genre 
+  set %wp.rn.manpreview $replace($did(btkrename,18),&artist,$gettok(%wp.rn.preview,1,38),&album,$gettok(%wp.rn.preview,2,38),&track,$gettok(%wp.rn.preview,3,38),&title,$gettok(%wp.rn.preview,4,38),&year,$gettok(%wp.rn.preview,5,38),&genre,$gettok(%wp.rn.preview,6,38))
+  set %wpsetup $did(btkrename,18)
+}
+alias -l btkrefresh {
+  var %i 3
+  var %o 35
+  var %v 29
+  while %i < 9 {
+    inc %i
+    inc %o 
+    inc %v
+    if $did(btkrename,%i).state {
+      if $did(btkrename,%o) {
+        did -o btkrename %v 1 $ifmatch
+      }
+    }
+    if %v == 30 { 
+      if $did(btkrename,%v) {
+        set %wp.rn.artist $ifmatch 
+      }
+      else set %wp.rn.artist NoInfo
+    }
+    elseif %v == 31 { 
+      if $did(btkrename,%v) {
+        set %wp.rn.album $ifmatch
+      }
+      else set %wp.rn.album NoInfo
+    }
+    elseif %v == 32 { 
+      if $did(btkrename,%v) {
+        set %wp.rn.track $ifmatch
+      }
+      else set %wp.rn.track NoInfo
+    }
+    elseif %v == 33 { 
+      if $did(btkrename,%v) {
+        set %wp.rn.title $ifmatch
+      }
+      else set %wp.rn.title NoInfo
+    }
+    elseif %v == 34 { 
+      if $did(btkrename,%v) {
+        set %wp.rn.year $ifmatch
+      }
+      else set %wp.rn.year NoInfo
+    }
+    elseif %v == 35 { 
+      if $did(btkrename,%v) {
+        set %wp.rn.genre $ifmatch
+      }
+      else set %wp.rn.genre NoInfo
+    }  
+  }
+  btksetrefresh
+  did -r btkrename 3
+  did -a btkrename 3 %wp.rn.manpreview
+}
+alias -l btkshowinfo {
+  did -a btkrename 22 $nopath(%wp.rn.origfile)
+  did -a btkrename 23 $nofile(%wp.rn.origfile)
+  did -a btkrename 36,30 %wp.rn.artist
+  did -a btkrename 37,31 %wp.rn.album
+  did -a btkrename 38,32 %wp.rn.track
+  did -a btkrename 39,33 %wp.rn.title
+  did -a btkrename 40,34 %wp.rn.year
+  did -a btkrename 41,35 %wp.rn.genre
+  did -a btkrename 3 %wp.rn.manpreview
+}
+alias -l btkenabling {
+  var %i 3
+  var %o 35
+  var %v 29
+  while %i < 9 {
+    inc %i    
+    inc %v
+    inc %o
+    if $did(btkrename,%i).state { 
+      did -o btkrename %v 1 $did(btkrename,%o)
+    }
+  }
+  btkrefresh
+}
+alias -l btkdelete {
+  if $input(Are You Sure you want to move $nopath(%wp.rn.origfile) to the recycle bin?,qc,btk mp3 renamer) {
+    .remove -b $qt(%wp.rn.origfile)
+    echo -s 4,12Removed15 %wp.rn.origfile 4to recycle bin.
+    btkimport
+
+  }
+}
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;  
+;;;;;;;;;;       WP PlayList         ;;;;;;;;;;  Added 12th Feb 200
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;  
+
+menu channel,status {
+  WP MP3 Player
+  .Use MP3 Playlist:wplist.open
+} 
+
+alias -l wplist.open {
+  $iif($dialog(wplist),dialog -v wplist,dialog -md wplist wplist)
+}
+
+dialog -l WPlist {
+  title "WP MP3 Playlist [Now Playing : ]"
+  size -1 -1 971 283
+  option pixels notheme
+  icon $scriptdirwpicon.ico, 0
+  list 1, 5 20 450 250, size extsel
+  list 2, 517 20 450 250, sort size extsel
+  text "PLAYLIST", 3, 10 2 274 16
+  text "My Music", 4, 519 2 296 16
+  icon 5, 471 24 32 32,  $scriptdiradd.ico, 0
+  icon 6, 471 81 32 32,  $scriptdirremove.ico, 0
+  icon 7, 471 175 32 32,  $scriptdirplay.ico, 0, disable
+  icon 8, 471 232 32 32,  $scriptdirstop.ico, 0
+  text "Add", 9, 479 54 20 16, center
+  text "Remove", 10, 467 111 40 16, center
+  box "", 11, 457 12 60 60
+  box "", 12, 457 69 60 60
+  box "", 13, 457 163 60 60
+  box "", 14, 457 220 60 60
+  text "Play", 15, 474 205 30 16, disable center
+  text "Stop", 16, 477 262 22 16, center
+  menu "&Settings", 17
+  item "Show songs in &MSN messenger", 18, 17
+  item "Show songs in &channel", 19, 17
+  menu "&Help", 20
+  item "&About", 22, 20
+}
+dialog -l wplistchans {
+  title "Select Channels"
+  size -1 -1 150 125
+  option dbu notheme
+  icon $scriptdirwpicon.ico, 0
+  list 1, 5 5 140 100, size extsel
+  button "Show to Selection", 2, 5 110 140 10
+}
+
+on 1:dialog:WPlist:sclick:*:{
+  if $inrect($mouse.x,$mouse.y,457,12,60,60) { WPlist.add }
+  elseif $inrect($mouse.x,$mouse.y,457,69,60,60) { WPlist.remove }
+  elseif $inrect($mouse.x,$mouse.y,457,163,60,60) { WPlist.play }
+  elseif $inrect($mouse.x,$mouse.y,457,220,60,60) { WPlist.stop }
+}
+on 1:dialog:WPlist:init:0:{
+  if $dialog(wpmain) {
+    filter -io wpmain 1 WPlist 2 *.mp3
+    dialog -x wpmain
+    .disable #wpsends #wpfinds #wprandom #wprepeat #wpstealth
+    .timerwplayer off
+    .timerwpslotshow off
+    .timerwp-player off
+    unset %wp.chan* %wp.versionchecked
+  }
+  else {
+    var %i = 0
+    while %i < %wp.mp3dirtotal {
+      inc %i
+      noop $findfile($($+(%,wp.mp3dir,%i),4),*.mp3,0,0,did -a wplist 2 $nopath($1-) )
+    }
+    $iif(%wp.msnon, did -c wplist 18 , did -u wplist 18 )
+  }
+  .enable #wp.playlist
+}
+on 1:dialog:WPlist:close:0:{
+  .timerWPlist off
+  unset %WPlist.*
+  .disable #wp.playlist
+}
+on 1:dialog:wplist:menu:*:{
+  if $did == 18 {
+    $iif(%wp.msnon,unset,set) %wp.msnon $true
+    $iif(%wp.msnon, did -c wplist 18 , did -u wplist 18 )
+  }
+  elseif $did == 19 {
+    $dialog(wplistchans,wplistchans,-4)
+  }
+  elseif $did == 22 { wpabout }
+}
+on 1:dialog:wplistchans:init:0:{
+  if $chan(1) {
+    var %i 0
+    while %i < $chan(0) {
+      inc %i
+      did -a wplistchans 1 $chan(%i)
+    }
+  }
+  else did -a wplistchans 1 No Channels Available
+}
+on 1:dialog:wplistchans:sclick:2:{
+  unset %wplist.chans
+  while $did(wplistchans,1,0).sel {
+    set %wplist.chans $addtok( %wplist.chans , $did(wplistchans,1,1).seltext , 44 )
+    did -uk wplistchans 1 $did(wplistchans,1,1).sel
+  }
+  if %wplist.chans == No Channels Available { unset $v1 }
+  $iif(%wplist.chans,did -c wplist 19,did -u wplist 19)
+  dialog -x wplistchans
+}
+alias -l WPlist.add {
+  var %i = 0 
+  while $did(WPlist,2,0).sel {
+    inc %i
+    did -a WPlist 1 $did(WPlist,2,%i).seltext
+    did -uk WPlist 2 $did(WPlist,2,1).sel
+  }
+  if $did(wplist,1).lines { did -e wplist 7,15 }
+}
+alias -l WPlist.remove {
+  var %i = 0
+  while $did(WPlist,1,0).sel {
+    inc %i
+    did -d WPlist 1 $did(WPlist,1,1).sel
+  }
+  if $did(wplist,1).lines { did -e wplist 7,15 }
+}
+alias -l WPlist.play {
+  if $1 == reset || !$did(WPlist,1).lines { goto play }
+  $iif( %WPlist.play , unset , set ) %WPlist.play $true
+  $iif( %WPlist.play , goto pause , goto play )
+  :pause
+  did -g WPlist 7 $qt($scriptdirpause.ico)
+  did -o WPlist 15 1 Pause 
+  WPlist.song play $did(WPlist,1,1).sel
+  return
+  :play
+  did -g WPlist 7 $qt($scriptdirplay.ico)
+  did -o WPlist 15 1 Play 
+  WPlist.song pause
+}
+alias -l WPlist.stop {
+  splay stop
+  unset %WPlist.play
+  WPlist.play reset
+  .timerWPlist off
+  did -u wplist 19
+}
+
+alias -l WPlist.song {
+  if $insong.pause {
+    splay resume
+    did -co WPlist 1 $didwm(WPlist,1,$+(*, $nopath($insong.fname) ,*)) $nopath($insong.fname)
+    .timerWPlist -m 0 100 dialog -t WPlist WP MP3 Playlist [Now Playing : $!nopath($insong.fname) ] $!WPlisticon  
+    halt
+  }
+  if $1 == Pause {
+    if $insong {
+      splay pause
+      did -co WPlist 1 $didwm(WPlist,1,$nopath($insong.fname)) $+(!!!PAUSED!!! $chr(32) , $nopath($insong.fname) , $chr(32) !!!PAUSED!!!)
+      dialog -t WPlist WP MP3 Playlist [Now Playing : $nopath($insong.fname) ] $WPlisticon
+      .timerwplist off
+      halt
+    }
+  }
+  elseif $1 == play {
+    if ( !$2 ) || ( $2 > $did(WPlist,1).lines ) {
+      set %WPlist.song 1
+    }
+    else set %WPlist.song $2
+    var %i = 0 {
+      while %i < %wp.mp3dirtotal {
+        inc %i
+        if $findfile( $($+(%,wp.mp3dir,%i),3) , $did(WPlist,1,%WPlist.song) , 1 , 0 ) {
+          did -c WPlist 1 %WPlist.song
+          splay $v1
+          .timerWPlist -m 0 100 dialog -t WPlist WP MP3 Playlist [Now Playing : $!nopath($insong.fname) ] $!WPlisticon  
+          if %wp.msnon { msnsong $nopath($insong.fname) }
+          if %wp.onair { 
+            set %wp.playsong $insong.fname
+            wp.onairmakefile
+          }
+          if %wplist.chans { 
+            var %x = 0
+            while %x < $numtok(%wplist.chans,44) {
+              inc %x
+              if $network {
+                describe $gettok(%wplist.chans,%x,44) -=WP MP3=- $nopath($insong.fname)
+              }
+            }
+          }
+          return
+        }
+      }
+    }
+  }
+}
+
+alias -l WPlisticon {
+  if !$insong { return }
+  if $insong.pause { return !!! PAUSED !!! }
+  else {
+    set %WPlist.icons (, ¯,  ¯,   ¯,    ),   _,  _, _,_
+    if %WPlist.iconum < $numtok(%WPlist.icons,44) {
+      inc %WPlist.iconum 
+    }
+    else set %WPlist.iconum 1
+    return $gettok(%WPlist.icons,%WPlist.iconum,44)
+  }
+}
